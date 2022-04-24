@@ -1,0 +1,60 @@
+<!DOCTYPE html>
+<html lang="en">
+    <head>
+        <meta charset="UTF-8">
+        <meta http-equiv="X-UA-Compatible" content="IE=edge">
+        <meta name="viewport" content="width=device-width, initial-scale=1.0">
+        <link rel="stylesheet" href="../css/main.css">
+        <script src="../javascript/newobs.js"></script>
+        <title>JWST Online</title>
+    </head>
+    <body>
+        <div class="navgrid">
+            <div class="pagebuttons">
+                <img src="../images/logo.jpg" , class="logo">
+                <a class="active" href='/observations'>Browse</a>
+                <a class="selected">Post</a>
+                <a class="active">Support</a>
+            </div>
+            <div class="userdetails">
+                <h3>Username</h3>
+                <a class="active" href="/user/Username">My account</a>
+                <a class="active" href="/login">Sign out</a>
+            </div>
+        </div>
+        <div class="grid">
+            <form class="newpost" action="/observation/new" method="post">
+                <label for="title">Title:</label>
+                <input id="title" name="title" required>
+                <br>
+                <label for="category">Category:</label>
+                <select id="category" name="category" required>
+                    <option value="" selected disabled>-- Please select --</option>
+                    <option value="elliptical">Elliptical</option>
+                    <option value="spiral">Spiral</option>
+                    <option value="irregular">Irregular</option>
+                </select>
+                <br>
+                <label for="longitude">Coordinates:</label>
+                <input id="longitude" name="longitude" required type="number" step="any" placeholder="Longitude">
+                <input id="latitude" name="latitude" required type="number" step="any" placeholder="Latitude">
+                <br>
+                <label for="description">Description:</label>
+                <br>
+                <textarea id="description" name="description" required rows="8" cols="50"></textarea>
+                <br>
+                <label for="analyses[0]">Analyses:</label>
+                <button type="button" id="plus" class="" onclick="addAnalysis()">+</button>
+                <button type="button" id="minus" class="hidden" onclick="removeAnalysis()">-</button>
+                <div id="analysesContainer">
+                    <input id="analyses[0]" name="analyses[0]" required>
+                </div>
+                <br>
+                <label for="image">Image upload:</label>
+                <input id="image" name="image" required type="file" accept="image/png, image/jpeg">
+                <br>
+                <button type="submit">Submit post</button>
+            </form>
+        </div>
+    </body>
+</html>

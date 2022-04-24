@@ -1,0 +1,58 @@
+<!DOCTYPE html>
+<html lang="en">
+    <head>
+        <meta charset="UTF-8">
+        <meta http-equiv="X-UA-Compatible" content="IE=edge">
+        <meta name="viewport" content="width=device-width, initial-scale=1.0">
+        <link rel="stylesheet" href="../css/main.css">
+        <title>JWST Online</title>
+    </head>
+    <body>
+        <div class="navgrid">
+            <div class="pagebuttons">
+                <img src="../images/logo.jpg" , class="logo">
+                <a class="active" href='/observations'>Browse</a>
+                <a class="active" href='/observation/new'>Post</a>
+                <a class="active">Support</a>
+            </div>
+            <div class="userdetails">
+                <h3>Username</h3>
+                <a class="selected">My account</a>
+                <a class="active" href="/login">Sign out</a>
+            </div>
+        </div>
+
+        <div id="user">
+            <h1><%=user.username%></h1>
+            <h2><%=user.forename%> <%=user.surname%></h2>
+            <h3>Account type: <%=user.accountType%></h3>
+            <h3>Status: <%=user.accountStatus%></h3>
+        </div>
+        <div class="usergrid">
+        <div class="userposts">
+        <h1>Posts</h1>
+        <%posts.forEach(function(post){ %>
+            <div class="post">
+                <h1><a href="/observation/?id=<%=post._id%>"><%=post.title%></a></h1>
+                <h2>Uploaded on: <%=post.updatedAt%></h2>
+                <h3>Category: <%=post.category%></h3>
+                <h3>
+                    Coordinates:<%=post.galacticCoords.longitude%> Long.,
+                    <%=post.galacticCoords.latitude%> Lat.
+                </h3>
+            </div>
+            <%})%>
+        </div>
+
+        <div class="usercomments">
+            <h1>Comments</h1>
+            <%comments.forEach(function(post){ %>
+            <div class="comment">
+                <h1><a href="/observation/?id=<%=post._id%>"><%=post.title%></a></h1>
+                <p><%=post.comment.content%></p>
+            </div>
+            <%})%>
+        </div>
+    </div>
+    </body>
+</html>

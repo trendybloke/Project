@@ -1,0 +1,55 @@
+<!DOCTYPE html>
+<html lang="en">
+    <head>
+        <meta charset="UTF-8">
+        <meta http-equiv="X-UA-Compatible" content="IE=edge">
+        <meta name="viewport" content="width=device-width, initial-scale=1.0">
+        <meta http-equiv="refresh" url="/observation/?id">
+        <link rel="stylesheet" href="../css/main.css">
+        <title>JWST Online</title>
+    </head>
+    <body>
+        <div class="navgrid">
+            <div class="pagebuttons">
+                <img src="../images/logo.jpg" , class="logo">
+                <a class="selected">Browse</a>
+                <a class="active" href='/observations/new'>Post</a>
+                <a class="active">Support</a>
+            </div>
+            <div class="userdetails">
+                <h3>Username</h3>
+                <a class="active" href="/user/Username">My account</a>
+                <a class="active" href="/login">Sign out</a>
+            </div>
+        </div>
+        <form class="filters" action="/observations" method="get">
+            <label for="date">Upload date:</label>
+            <select name="date" id="date">
+                <option value="desc">Most recent</option>
+                <option value="asc">Oldest</option>
+            </select>
+            <br>
+            <label for="title">Title:</label>
+            <input name="title" id="title"/>
+            <br>
+            <label for="analyses">Analyses:</label>
+            <input name="analyses" id="analyses"/>
+            <br>
+            <button>Search</button>
+        </form>
+        <div class="postgrid">
+        <%posts.forEach(function(post){ %>
+        <div class="post">
+            <h1><a href="/observation/?id=<%=post._id%>"><%=post.title%></a></h1>
+            <h2>Uploaded on: <%=post.updatedAt%></h2>
+            <h3>By <a href="/user/<%=post.username%>"><%=post.username%></a></h3>
+            <h3>Category: <%=post.category%></h3>
+            <h3>
+                Coordinates:<%=post.galacticCoords.longitude%> Long.,
+                <%=post.galacticCoords.latitude%> Lat.
+            </h3>
+        </div>
+        <%})%>
+        </div>
+    </body>
+</html>

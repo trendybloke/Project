@@ -1,0 +1,115 @@
+* {
+    background-color: #f0f0f5;
+    font-family: 'Courier New', Courier, monospace;
+    box-sizing: border-box;
+    color: #0033cc;
+}
+
+.postgrid{
+    display: grid;
+    grid-template-columns: 30% auto 30% ; 
+    grid-template-rows: auto auto;
+    padding: 12px;
+}
+
+.newpost {
+    border: 5px solid #0033cc;
+    grid-column: 2;
+    grid-row: 1;
+    margin: auto;
+    padding: 12px;
+    display: block;
+}
+
+.post{
+    grid-column:2;
+    border: 2px solid #0033cc
+}
+
+.filters{
+    display: block;
+    margin-left: 30%;
+    margin-right: 30%;
+    width: auto;
+}
+
+.hidden {
+    display: none;
+}
+
+.navgrid{
+    display: grid;
+    grid-template-columns: 30% 40% 30%;
+    grid-template-rows: 100%;
+    padding: 8px;
+    background-color: #0033cc;
+}
+
+.navgrid * {
+    background-color: #0033cc;
+    color: #f0f0f5;
+}
+
+.logo{
+    display: block;
+    border: 0.25em solid;
+    border-radius: 20%;
+    border-color: #f0f0f5;
+    max-width: 30%;
+    height: auto;
+    max-height: 80px;
+    margin: auto;
+}
+
+.pagebuttons{
+    grid-column: 1;
+    grid-row: 1;
+    text-align: center;
+}
+
+.userdetails{
+    grid-column: 3;
+    grid-row: 1;
+}
+
+.selected,
+.active:hover{
+    border: #e60000 solid 2px;
+}
+
+.active{
+    border: #ff9900 solid 2px;
+}
+
+.usergrid{
+    display: grid;
+    grid-template-columns: 50% 50%;
+    grid-template-rows: auto;
+    padding: 8px;
+}
+
+.userposts{
+    grid-column: 1;
+}
+
+.usercomments{
+    grid-column: 2;
+}
+
+textarea{
+    height: 100px;
+    width: auto;
+    max-width: 60%;
+}
+
+input:invalid:required,
+select:invalid:required,
+textarea:empty {
+    border: 2px solid #e60000;
+}
+
+input:valid,
+select:valid,
+textarea:valid {
+    border: 2px solid #ff9900;
+}

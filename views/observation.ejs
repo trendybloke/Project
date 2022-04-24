@@ -1,0 +1,46 @@
+<!DOCTYPE html>
+<html lang="en">
+    <head>
+        <meta charset="UTF-8">
+        <meta http-equiv="X-UA-Compatible" content="IE=edge">
+        <meta name="viewport" content="width=device-width, initial-scale=1.0">
+        <link rel="stylesheet" href="../css/main.css">
+        <title>JWST Online</title>
+    </head>
+    <body>
+        <%- include ('partials/navbar.ejs') %>
+
+        <div id="post">
+            <h1><%=post.title%></h1>
+            <h2>Uploaded on: <%=post.createdAt%>, Last edited: <%=post.updatedAt%></h2>
+            <h3>By <a href="/user/<%=post.username%>"><%=post.username%></a></h3>
+            <h3>Category: <%=post.category%></h3>
+            <h3>
+                Coordinates:<%=post.galacticCoords.longitude%> Long.,
+                <%=post.galacticCoords.latitude%> Lat.
+            </h3>
+            <h3>Description:</h3>
+            <p><%=post.description%></p>
+            <h3>Analyses</h3>
+            <ul>
+            <%post.analyses.forEach(function(analysis){ %> 
+                <li><%=analysis%></li>
+            <%})%>
+            </ul>
+        </div>
+        <div id="comments">
+            <h1>Comments</h1>
+            <%post.comments.forEach(function(comment){%> 
+                <div class="comment">
+                    <h3><a href="/user/<%=comment.username%>"><%=comment.username%>, <%=comment.createdAt%></a></h3> 
+                    <p><%=comment.content%></p>
+                </div>
+            <%})%>
+            <form action="/observation/comment" method="post" onsubmit="window.location.reload()">
+                <input type="hidden" id="postid" name="postid" value="<%=post._id%>">
+                <textarea id="content" name="content" required placeholder="Leave a comment..."></textarea>
+                <button>Comment</button>
+            </form>
+        </div>
+    </body>
+</html>
