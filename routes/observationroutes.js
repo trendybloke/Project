@@ -12,15 +12,14 @@ module.exports = (app) => {
     passport.deserializeUser(User.deserializeUser());
 
     checkAuth = (req, res, next) => {
-        if(req.isAuthenticated()){
+        if (req.isAuthenticated()) {
             return next();
         }
         res.redirect('/login');
     }
 
     app.get('/observations/new', checkAuth, (req, res) => {
-        // res.sendFile(path.join(__dirname, '../public/html', 'newobs.html'));
-        res.render('../views/newobs.ejs');
+        if (req.user.kind == "Client") res.render('../views/newobs.ejs', {username:req.user.username});
     });
 
     app.get('/observations', checkAuth, (req, res) => {
@@ -36,49 +35,52 @@ module.exports = (app) => {
         Observation.find({
             title: { $regex: `.*${title}.*`, $options: 'i' },
             analyses: { $regex: `.*${analyses}.*`, $options: 'i' }
-        })  .sort([["createdAt", order]])
+        }).sort([["createdAt", order]])
             .exec((err, qry) => {
                 if (err) throw err;
-                res.render('../views/browse.ejs', { posts: qry })
+                res.render('../views/browse.ejs', { posts: qry, username:req.user.username })
             });
     });
 
     app.get('/observation', checkAuth, (req, res) => {
         Observation.findById(req.query.id, (err, qry) => {
             if (err) throw err;
-            res.render('../views/observation.ejs', { post: qry });
+            res.render('../views/observation.ejs', { post: qry, username:req.user.username });
         });
     })
 
     app.post('/observation/new', checkAuth, (req, res) => {
-        const newObs = new Observation({
-            username: "Username",
-            category: req.body.category,
-            title: req.body.title,
-            galacticCoords: {
-                longitude: req.body.longitude,
-                latitude: req.body.latitude
-            },
-            description: req.body.description,
-            analyses: req.body.analyses,
-            comments: []
-        });
+        if (req.user.kind == "Client") {
+            const newObs = new Observation({
+                username: "Username",
+                category: req.body.category,
+                title: req.body.title,
+                galacticCoords: {
+                    longitude: req.body.longitude,
+                    latitude: req.body.latitude
+                },
+                description: req.body.description,
+                analyses: req.body.analyses,
+                comments: []
+            });
 
-        newObs.save((err) => {
-            if (err) throw err;
-        })
+            newObs.save((err) => {
+                if (err) throw err;
+            })
 
-        res.redirect(301, `/observation/?id=${newObs._id}`)
+            // MAKE EJS
+            res.redirect(301, `/observation/?id=${newObs._id}`)
+        }
     });
 
     app.post('/observation/comment', checkAuth, (req, res) => {
         // Expecting in body:
-            // postid
-            // username - for now a constant of Username
-            // content
+        // postid
+        // username - for now a constant of Username
+        // content
 
         Observation.findById(req.body.postid, (err, qry) => {
-            if(err) throw err;
+            if (err) throw err;
             qry.comments.push({
                 username: "Username",
                 content: req.body.content
@@ -86,6 +88,7 @@ module.exports = (app) => {
 
             qry.save();
 
+            //MAKE EJS
             res.redirect(301, `/observation/?id=${req.body.postid}`);
         })
     });

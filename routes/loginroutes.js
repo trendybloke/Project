@@ -112,6 +112,9 @@ module.exports = (app) => {
 
     app.get("/logout", (req, res) => {
         req.logout();
-        res.redirect('/login');
+        delete req.session;
+        delete req.user;
+        req.user = null;
+        res.redirect(302, '/login');
     });
 }

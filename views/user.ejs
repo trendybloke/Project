@@ -8,7 +8,7 @@
         <title>JWST Online</title>
     </head>
     <body>
-        <%- include ('partials/navbar.ejs', {current:"none"}); %>
+        <%- include ('partials/navbar.ejs', {current:"none", username:username}); %>
         <div id="user">
             <h1><%=user.username%></h1>
             <h2><%=user.forename%> <%=user.surname%></h2>

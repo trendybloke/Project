@@ -9,7 +9,7 @@
         <title>JWST Online</title>
     </head>
     <body>
-        <%- include ('partials/navbar.ejs', {current:"post"}); %>
+        <%- include ('partials/navbar.ejs', {current:"post", username:username}); %>
         <div class="grid">
             <form class="newpost" action="/observation/new" method="post">
                 <label for="title">Title:</label>

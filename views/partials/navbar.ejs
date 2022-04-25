@@ -11,11 +11,15 @@
         <%} else {%>
             <a class="active" href='/observations/new'>Post</a>
         <%}%>
-        <a class="active">Support</a>
+        <% if(current == "support") {%>
+            <a class="selected">Support</a>
+        <%} else {%>
+            <a class="active">Support</a>
+        <%}%>
     </div>
     <div class="userdetails">
-        <h3>Username</h3>
-        <a class="active" href="/user/Username">My account</a>
+        <h3><%=username%></h3>
+        <a class="active" href="/user/<%=username%>">My account</a>
         <a class="active" href="/logout">Sign out</a>
     </div>
 </div>

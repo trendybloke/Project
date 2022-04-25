@@ -9,7 +9,7 @@
         <title>JWST Online</title>
     </head>
     <body>
-        <%- include ('partials/navbar.ejs', {current:"browse"}); %>
+        <%- include ('partials/navbar.ejs', {current:"browse", username:username}); %>
         <form class="filters" action="/observations" method="get">
             <label for="date">Upload date:</label>
             <select name="date" id="date">
