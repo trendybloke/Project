@@ -1,13 +1,21 @@
 <div class="navgrid">
     <div class="pagebuttons">
         <img src="../images/logo.jpg" , class="logo">
-        <a class="active" href='/observations'>Browse</a>
-        <a class="active" href='/observations/new'>Post</a>
+        <% if(current == "browse") {%>
+            <a class="selected">Browse</a>
+        <%} else {%>
+            <a class="active" href='/observations'>Browse</a>
+        <%}%>
+        <% if(current == "post") {%>
+            <a class="selected">Post</a>
+        <%} else {%>
+            <a class="active" href='/observations/new'>Post</a>
+        <%}%>
         <a class="active">Support</a>
     </div>
     <div class="userdetails">
         <h3>Username</h3>
         <a class="active" href="/user/Username">My account</a>
-        <a class="active" href="/login">Sign out</a>
+        <a class="active" href="/logout">Sign out</a>
     </div>
 </div>

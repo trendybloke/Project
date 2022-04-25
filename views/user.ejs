@@ -8,20 +8,7 @@
         <title>JWST Online</title>
     </head>
     <body>
-        <div class="navgrid">
-            <div class="pagebuttons">
-                <img src="../images/logo.jpg" , class="logo">
-                <a class="active" href='/observations'>Browse</a>
-                <a class="active" href='/observation/new'>Post</a>
-                <a class="active">Support</a>
-            </div>
-            <div class="userdetails">
-                <h3>Username</h3>
-                <a class="selected">My account</a>
-                <a class="active" href="/login">Sign out</a>
-            </div>
-        </div>
-
+        <%- include ('partials/navbar.ejs', {current:"none"}); %>
         <div id="user">
             <h1><%=user.username%></h1>
             <h2><%=user.forename%> <%=user.surname%></h2>

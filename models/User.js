@@ -1,4 +1,5 @@
 const mongoose = require('../config/dbconfig');
+const passportLocalMongoose = require("passport-local-mongoose");
 const Address = require('./Address');
 
 const options = {discriminatorKey: 'kind' };
@@ -20,5 +21,7 @@ const UserSchema = new mongoose.Schema({
         }
     }
 }, options );
+
+UserSchema.plugin(passportLocalMongoose);
 
 module.exports = mongoose.model('users', UserSchema);

@@ -1,18 +1,29 @@
-const { post } = require('../models/Address');
-
 module.exports = (app) => {
     const mongoose = require('../config/dbconfig');
     const User = require('../models/User');
     const Client = require('../models/Client');
     const Support = require('../models/Support');
     const Observation = require('../models/Observation');
+    const passport = require('passport');
     const path = require('path');
 
-    app.get('/observations/new', (req, res) => {
-        res.sendFile(path.join(__dirname, '../public/html', 'newobs.html'));
+    passport.use(User.createStrategy());
+    passport.serializeUser(User.serializeUser());
+    passport.deserializeUser(User.deserializeUser());
+
+    checkAuth = (req, res, next) => {
+        if(req.isAuthenticated()){
+            return next();
+        }
+        res.redirect('/login');
+    }
+
+    app.get('/observations/new', checkAuth, (req, res) => {
+        // res.sendFile(path.join(__dirname, '../public/html', 'newobs.html'));
+        res.render('../views/newobs.ejs');
     });
 
-    app.get('/observations', (req, res) => {
+    app.get('/observations', checkAuth, (req, res) => {
 
         let title = req.query.title;
         let analyses = req.query.analyses;
@@ -32,14 +43,14 @@ module.exports = (app) => {
             });
     });
 
-    app.get('/observation', (req, res) => {
+    app.get('/observation', checkAuth, (req, res) => {
         Observation.findById(req.query.id, (err, qry) => {
             if (err) throw err;
             res.render('../views/observation.ejs', { post: qry });
         });
     })
 
-    app.post('/observation/new', (req, res) => {
+    app.post('/observation/new', checkAuth, (req, res) => {
         const newObs = new Observation({
             username: "Username",
             category: req.body.category,
@@ -60,7 +71,7 @@ module.exports = (app) => {
         res.redirect(301, `/observation/?id=${newObs._id}`)
     });
 
-    app.post('/observation/comment', (req, res) => {
+    app.post('/observation/comment', checkAuth, (req, res) => {
         // Expecting in body:
             // postid
             // username - for now a constant of Username

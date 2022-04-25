@@ -7,8 +7,19 @@ module.exports = (app) => {
     const Support = require('../models/Support');
     const Observation = require('../models/Observation');
     const path = require('path');
+    const passport = require('passport');
+    passport.use(User.createStrategy());
+    passport.serializeUser(User.serializeUser());
+    passport.deserializeUser(User.deserializeUser());
 
-    app.get('/user/:name', (req, res) => {
+    checkAuth = (req, res, next) => {
+        if(req.isAuthenticated()){
+            return next();
+        }
+        res.redirect('/login');
+    }
+
+    app.get('/user/:name', checkAuth, (req, res) => {
         // Get user
         User.findOne({username: req.params.name}, (err, userQry) => {
             if(err) throw err;

@@ -1,12 +1,25 @@
+const { Console } = require('console');
+
 module.exports = (app) => {
     const mongoose = require('../config/dbconfig');
     const User = require('../models/User');
     const Client = require('../models/Client');
     const Support = require('../models/Support');
+    const passport = require('passport');
     const path = require('path');
     const bcrypt = require('bcrypt');
     const saltRounds = 10;
 
+    passport.use(User.createStrategy());
+    passport.serializeUser(User.serializeUser());
+    passport.deserializeUser(User.deserializeUser());
+
+    checkAuth = (req, res, next) => {
+        if(req.isAuthenticated()){
+            return next();
+        }
+        res.redirect('/login');
+    }
 
     app.get("/login", (req, res) => {
         res.sendFile(path.join(__dirname, '../public/html', 'login.html'));
@@ -16,7 +29,9 @@ module.exports = (app) => {
         res.sendFile(path.join(__dirname, '../public/html', 'support.html'));
     });
 
-    app.post("/login/parse", (req, res) => {
+    // old login post
+    /* app.post("/login/parse", (req, res) => {
+        console.log("reached parse...")
         // Build parsed user
         User.findOne({username: req.body.username},
             (err, parsedUser) => {
@@ -27,7 +42,7 @@ module.exports = (app) => {
                 res.redirect(404, "/login");
                 return;
             }
-
+            console.log("found user...")
             // User password is incorrect
             bcrypt.hash(req.body.password, saltRounds, (err, hash) => {
                 if(err) throw err;
@@ -37,24 +52,26 @@ module.exports = (app) => {
                     return;
                 }
             })
-
+            console.log("password correct...")
             // Is user a client?
             Client.findOne({username: parsedUser.username}, 
                 (err, clientUser) => {
                 if(err) throw err;
                 
-                // User is client, so redirect to browse
+                console.log("is user client?...")
+                    
+                // User is client, so redirect to browse, grant auth. perms
                 if(clientUser !== null){
-                    res.redirect(301, "/observations"); 
+                    res.redirect(301, '/observations')
                 }
                 return;
             });
-
+            console.log("No, is user suppport?...")
             // Is user a support member?
             Support.findOne({username: parsedUser.username},
              (err, supportUser) => {
                 if(err) throw err;
-
+                console.log("Yes, redirect...")
                 // User is support member, so redirect to support
                 if(supportUser !== null){
                     res.redirect(301, "/support");
@@ -62,5 +79,39 @@ module.exports = (app) => {
                 return;
             });
         });
+    });
+    */
+
+    app.post("/login/parse", 
+    passport.authenticate("local", {
+        failureRedirect: '/login'
+    }),
+    (req, res) => {
+        // Is user a client?
+        Client.findOne({username: req.body.username}, 
+            (err, clientUser) => {
+            if(err) throw err;
+                
+            // User is client, so redirect to browse
+            if(clientUser !== null){
+                res.redirect(301, '/observations')
+            }
+            return;
+        });
+        // Is user a support member?
+        Support.findOne({username: req.body.username},
+         (err, supportUser) => {
+            if(err) throw err;
+            // User is support member, so redirect to support
+            if(supportUser !== null){
+                res.redirect(301, "/support");
+            }
+            return;
+        });
+    });
+
+    app.get("/logout", (req, res) => {
+        req.logout();
+        res.redirect('/login');
     });
 }
