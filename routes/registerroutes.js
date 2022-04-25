@@ -4,34 +4,37 @@ module.exports = (app) => {
     const Client = require('../models/Client');
     const Support = require('../models/Support');
     const path = require('path');
-    const hash = require('object-hash')
+    const bcrypt = require('bcrypt');
+    const saltRounds = 10;
 
     app.post("/register", (req, res) => {
         res.sendFile(path.join(__dirname, '../public/html', 'register.html'));
     });
 
     app.post("/register/parse", (req, res) => {
-        console.log("POST /register/parse reached...")
+        console.log(req.body);
+
         // Form validation
         /// Matching passwords
-        console.log("checking passwords match...")
         if(req.body.password !== req.body.confirmpassword){
-            console.log("password mismatch!")
             res.send("Failure!: passwords don't match!")
             return;
         }
-        console.log("passwords match!")
         // Get last four digits of cardnum
-        console.log("getting last 4 numbers on card...")
         let lastFourDigit = req.body.cardnum.substr(req.body.cardnum - 4);
-        console.log(`got last 4 numbers: ${lastFourDigit}`);
+
+        // Data hashing
+        const salt = bcrypt.genSaltSync(saltRounds);
+
+        const newPassHash = bcrypt.hashSync(req.body.password, salt);
+        const newCardNumHash = bcrypt.hashSync(req.body.cardnum, salt);
+        const newSecNumHash = bcrypt.hashSync(req.body.ccv, salt);
 
         // Client creation
-        console.log("creating client...");
         const newClient = Client({
             username: req.body.username,
             email: req.body.email,
-            passHash: hash(req.body.password),
+            passHash: newPassHash,
             forename: req.body.forename,
             surname: req.body.surname,
             address: {
@@ -48,23 +51,19 @@ module.exports = (app) => {
             phoneNumber: req.body.phone,
             paymentDetails: {
                 accountBalance: 0,
-                cardNumHash: hash(req.body.cardnum),
+                cardNumHash: newCardNumHash,
                 lastFourCardNum: lastFourDigit,
                 cardName: req.body.cardname,
                 creditCardType: req.body.cardtype,
-                secNumHash: hash(req.body.ccv),
+                secNumHash: newSecNumHash,
                 expiry: `${req.body.expiremonth}-20${req.body.expireyear}`
             }
         });
-        console.log("created client!");
 
-        console.log("saving client...");
         // Save new client
         newClient.save((err) => {
             if (err) 
                 throw(err);
-
-            console.log("New client saved")
             res.redirect(301, "/login");
         });
     });

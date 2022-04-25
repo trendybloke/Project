@@ -4,7 +4,9 @@ module.exports = (app) => {
     const Client = require('../models/Client');
     const Support = require('../models/Support');
     const path = require('path');
-    const hash = require('object-hash')
+    const bcrypt = require('bcrypt');
+    const saltRounds = 10;
+
 
     app.get("/login", (req, res) => {
         res.sendFile(path.join(__dirname, '../public/html', 'login.html'));
@@ -27,10 +29,14 @@ module.exports = (app) => {
             }
 
             // User password is incorrect
-            if (parsedUser.passHash !== hash(req.body.password)){
-                res.redirect(400, "/login");
-                return;
-            }
+            bcrypt.hash(req.body.password, saltRounds, (err, hash) => {
+                if(err) throw err;
+
+                if (!bcrypt.compare(hash, parsedUser.passHash)){
+                    res.redirect(400, "/login");
+                    return;
+                }
+            })
 
             // Is user a client?
             Client.findOne({username: parsedUser.username}, 
