@@ -1,4 +1,4 @@
-const { Console } = require('console');
+const { fail } = require('assert');
 
 module.exports = (app) => {
     const mongoose = require('../config/dbconfig');
@@ -22,7 +22,8 @@ module.exports = (app) => {
     }
 
     app.get("/login", (req, res) => {
-        res.sendFile(path.join(__dirname, '../public/html', 'login.html'));
+        //res.sendFile(path.join(__dirname, '../public/html', 'login.html'));
+        res.render('../views/login.ejs', {message: ""});
     });
 
     app.get("/support", (req, res) => {
@@ -87,26 +88,40 @@ module.exports = (app) => {
         failureRedirect: '/login'
     }),
     (req, res) => {
-        // Is user a client?
-        Client.findOne({username: req.body.username}, 
-            (err, clientUser) => {
+        let kind;
+        // Find user to determine kind
+        User.findOne({username: req.body.username},
+            (err, user) => {
             if(err) throw err;
+
+            if(user.kind)
+                kind = user.kind;
                 
-            // User is client, so redirect to browse
-            if(clientUser !== null){
-                res.redirect(301, '/observations')
+            // Is user a client?
+            if(kind == "Client"){
+                Client.findOne({username: req.body.username}, 
+                    (err, clientUser) => {
+                    if(err) throw err;
+                    
+                    // User is client, so redirect to browse
+                    if(clientUser !== null){
+                        res.redirect(301, '/observations')
+                    }
+    
+                });
             }
-            return;
-        });
-        // Is user a support member?
-        Support.findOne({username: req.body.username},
-         (err, supportUser) => {
-            if(err) throw err;
-            // User is support member, so redirect to support
-            if(supportUser !== null){
-                res.redirect(301, "/support");
+            // Is user a support member?
+            else if(kind == "Support") {
+                Support.findOne({username: req.body.username},
+                 (err, supportUser) => {
+                    if(err) throw err;
+                    
+                    // User is support member, so redirect to support
+                    if(supportUser !== null){
+                        res.redirect(301, `/user/${req.body.username}`);
+                    }
+                });
             }
-            return;
         });
     });
 

@@ -12,7 +12,11 @@
         <div id="user">
             <h1><%=user.username%></h1>
             <h2><%=user.forename%> <%=user.surname%></h2>
-            <h3>Account type: <%=user.accountType%></h3>
+            <% if(kind=="Client") {%>
+                <h3>Account type: <%=user.accountType%></h3>
+            <% } else {  %>
+                <h3>Account type: Support</h3>
+            <% } %>
             <h3>Status: <%=user.accountStatus%></h3>
         </div>
         <div class="usergrid">

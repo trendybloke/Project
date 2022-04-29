@@ -29,7 +29,7 @@
         <%posts.forEach(function(post){ %>
         <div class="post">
             <h1><a href="/observation/?id=<%=post._id%>"><%=post.title%></a></h1>
-            <h2>Uploaded on: <%=post.updatedAt%></h2>
+            <h2>Uploaded on: <%=moment(post.updatedAt).format('MMMM Do YYYY, h:mm:ss a')%></h2>
             <h3>By <a href="/user/<%=post.username%>"><%=post.username%></a></h3>
             <h3>Category: <%=post.category%></h3>
             <h3>

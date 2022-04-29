@@ -1,13 +1,20 @@
+const { Passport } = require('passport/lib');
+
 module.exports = (app) => {
     const mongoose = require('../config/dbconfig');
     const Obs = require('../models/Observation');
     const Client = require('../models/Client');
     const Support = require('../models/Support');
+    const passport = require('passport/lib');
+    const bcrypt = require('bcrypt');
+    const saltRounds = 10;
 
     // Basic hello world.
+    /*
     app.get('/', (req, res) => {
         res.send('Hello World!');
     });
+    */
 
     // Creates an observation object, stores it, and sends text to the screen
     // if successful.
@@ -81,11 +88,15 @@ module.exports = (app) => {
 
     // Creates a new default Support user, stores it, sends results to screen
     app.get('/newsupport', (req, res) => {
-        const NewSupport = new Support({
+
+        const salt = bcrypt.genSaltSync(saltRounds);
+        const newPassHash = bcrypt.hashSync("secretpassword", salt);
+
+        Support.register({
             // User information
-            username: "Supporter",
+            username: "Support",
             email: "address@email.com",
-            passHash: "secertinofmation",
+            passHash: newPassHash,
             forename: "Support",
             surname: "User",
             address: {
@@ -94,6 +105,7 @@ module.exports = (app) => {
                 town: "Town",
                 postcode: "ZZ9 1AA"
             },
+            accountStatus: "active",
             // Support information
             chats: [
                 {
@@ -106,8 +118,21 @@ module.exports = (app) => {
                     ]
                 }
             ]
+        },
+        "secretpassword",
+        (err, user) => {
+            if(err){
+                console.log(err);
+                return res.redirect(500, '/login');
+            }
+            else{
+                passport.authenticate("local")(req, res, () => {
+                    res.redirect('/login');
+                })
+            }
         });
 
+        /*
         NewSupport.save((err) => {
             if (err)
                 throw (err);
@@ -115,5 +140,6 @@ module.exports = (app) => {
             console.log("New support saved");
             res.send("Success!");
         });
+        */
     });
 }

@@ -6,6 +6,7 @@ module.exports = (app) => {
     const Observation = require('../models/Observation');
     const passport = require('passport');
     const path = require('path');
+    const moment = require('moment');
 
     passport.use(User.createStrategy());
     passport.serializeUser(User.serializeUser());
@@ -19,7 +20,12 @@ module.exports = (app) => {
     }
 
     app.get('/observations/new', checkAuth, (req, res) => {
-        if (req.user.kind == "Client") res.render('../views/newobs.ejs', {username:req.user.username});
+        if (req.user.kind == "Client") 
+            res.render('../views/newobs.ejs', {
+                current: "post",
+                username:req.user.username,
+                kind: "Client"
+            });
     });
 
     app.get('/observations', checkAuth, (req, res) => {
@@ -38,14 +44,26 @@ module.exports = (app) => {
         }).sort([["createdAt", order]])
             .exec((err, qry) => {
                 if (err) throw err;
-                res.render('../views/browse.ejs', { posts: qry, username:req.user.username })
+                res.render('../views/browse.ejs', { 
+                    posts: qry, 
+                    username:req.user.username,
+                    current: "",
+                    kind: req.user.kind,
+                    moment: moment
+                })
             });
     });
 
     app.get('/observation', checkAuth, (req, res) => {
         Observation.findById(req.query.id, (err, qry) => {
             if (err) throw err;
-            res.render('../views/observation.ejs', { post: qry, username:req.user.username });
+            res.render('../views/observation.ejs', { 
+                post: qry, 
+                username:req.user.username,
+                current: "",
+                kind: req.user.kind,
+                moment: moment
+            });
         });
     })
 
@@ -82,7 +100,7 @@ module.exports = (app) => {
         Observation.findById(req.body.postid, (err, qry) => {
             if (err) throw err;
             qry.comments.push({
-                username: "Username",
+                username: req.user.username,
                 content: req.body.content
             });
 

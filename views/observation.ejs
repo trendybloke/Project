@@ -12,7 +12,12 @@
 
         <div id="post">
             <h1><%=post.title%></h1>
-            <h2>Uploaded on: <%=post.createdAt%>, Last edited: <%=post.updatedAt%></h2>
+            <h2>
+                Uploaded on: <%=moment(post.createdAt).format('MMMM Do YYYY, h:mm:ss a')%>
+            </h2>
+            <h2>
+                Last edited: <%=moment(post.updatedAt).format('MMMM Do YYYY, h:mm:ss a')%>
+            </h2>
             <h3>By <a href="/user/<%=post.username%>"><%=post.username%></a></h3>
             <h3>Category: <%=post.category%></h3>
             <h3>
@@ -32,7 +37,9 @@
             <h1>Comments</h1>
             <%post.comments.forEach(function(comment){%> 
                 <div class="comment">
-                    <h3><a href="/user/<%=comment.username%>"><%=comment.username%>, <%=comment.createdAt%></a></h3> 
+                    <h3><a href="/user/<%=comment.username%>"><%=comment.username%>, 
+                        <a><%=moment(comment.createdAt).format('MMMM Do YYYY, h:mm:ss a')%></a>
+                    </h3> 
                     <p><%=comment.content%></p>
                 </div>
             <%})%>

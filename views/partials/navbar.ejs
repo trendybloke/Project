@@ -1,24 +1,32 @@
 <div class="navgrid">
     <div class="pagebuttons">
         <img src="../images/logo.jpg" , class="logo">
-        <% if(current == "browse") {%>
-            <a class="selected">Browse</a>
-        <%} else {%>
-            <a class="active" href='/observations'>Browse</a>
-        <%}%>
-        <% if(current == "post") {%>
-            <a class="selected">Post</a>
-        <%} else {%>
-            <a class="active" href='/observations/new'>Post</a>
-        <%}%>
-        <% if(current == "support") {%>
-            <a class="selected">Support</a>
-        <%} else {%>
-            <a class="active">Support</a>
+        <% if(kind == "Client") {%> 
+            <% if(current == "browse") {%>
+                <a class="selected">Browse</a>
+            <%} else {%>
+                <a class="active" href='/observations'>Browse</a>
+            <%}%>
+            <% if(current == "post") {%>
+                <a class="selected">Post</a>
+            <%} else {%>
+                <a class="active" href='/observations/new'>Post</a>
+            <%}%>
+            <% if(current == "support") {%>
+                <a class="selected">Support</a>
+            <%} else {%>
+                <a class="active" href="/message/Support">Support</a>
+            <%}%>
+        <%} else if (kind == "Support") {%>
+            <% if(current == "chat") {%>
+                <a class="selected">Chat</a>
+            <%} else {%>
+                <a class="active" href="/message/Username">Chat</a>
+            <%}%>
         <%}%>
     </div>
     <div class="userdetails">
-        <h3><%=username%></h3>
+        <h3 id="username"><%=username%></h3>
         <a class="active" href="/user/<%=username%>">My account</a>
         <a class="active" href="/logout">Sign out</a>
     </div>

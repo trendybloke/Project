@@ -28,7 +28,7 @@ app.use(passport.initialize());
 app.use(passport.session());
 
 // Routes used for testing purposes.
-// require('./routes/testroutes')(app);
+require('./routes/testroutes')(app);
 
 // Routes used for logging in
 require('./routes/loginroutes')(app);
@@ -42,6 +42,8 @@ require('./routes/observationroutes')(app);
 // Routes that involve users
 require('./routes/userroutes')(app);
 
+// Routes that involve messaging
+require('./routes/messageroutes')(app);
 
 app.get("/", (req, res) => {
     res.redirect("/login")

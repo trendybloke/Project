@@ -1,0 +1,66 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta http-equiv="refresh" url="/observation/?id">
+    <link rel="stylesheet" href="../css/main.css">
+    <title>JWST Online</title>
+</head>
+<body>
+    <%- include('partials/navbar.ejs'), {current: "support", username: username} %>
+    <div class="messageContainer" id="messageDiv">
+        <div class="messages" id="messages">
+            <%chat.messages.forEach(function(message){%>
+                <%if(message.senderUsername == username) {%>
+                    <div class="myMessage">
+                        <%=message.senderUsername%>
+                        <div class="myMessageContent">
+                            <%=message.content%>
+                        </div>
+                        <%=moment(message.createdAt).format("hh:mm a DD MMM YYYY")%>
+                    </div>
+                    <%} else {%>                
+                    <div class="theirMessage">
+                        <%=message.senderUsername%>
+                        <div class="theirMessageContent">
+                            <%=message.content%>
+                        </div>
+                        <%=moment(message.createdAt).format("hh:mm a DD MMM YYYY")%>
+                    </div>
+                    <%}%>
+            <%})%>
+        </div>
+    </div>
+    <form id="messageform" class="messageform" action="/message/<%=supportUser%>" method="post"
+        onsubmit="window.location.reload()" autocomplete="off">
+        <input id="content" name="content">
+        <button>Send</button>
+    </form>
+</body>
+<script src="../javascript/message.js"></script>
+<script>
+    /*
+    // INCLUDE IN HEADER:
+    //     <script src="/socket.io/socket.io.js">
+    //
+
+    const socket = io();
+    const username = document.getElementById('username').innerHTML;
+    socket.emit('joining user', username);
+
+    const messageForm = document.getElementById('messageform');
+    const textInput = document.getElementById('content');
+
+    messageForm.addEventListener('submit', function(e) {
+        e.preventDefault();
+        if(textInput.value) {
+            socket.emit('new message', (data) => {
+
+            })
+        }
+    });
+    */
+</script>
+</html>
