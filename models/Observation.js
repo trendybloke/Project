@@ -30,10 +30,19 @@ const ObservationSchema = new mongoose.Schema({
         required: true
     },
     analyses:{ 
-        type: [String]
+        type: [String],
+        required: true
     },
     comments:{
         type: [Comment]
+    },
+    status:{
+        type: String,
+        enum: {
+            values: ['visible', 'private', 'flagged', 'removed'],
+            message: '{VALUE} is not a valid status.'
+        },
+        required: true
     }
 },
 { timestamps: true }

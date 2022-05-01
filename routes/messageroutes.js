@@ -22,10 +22,42 @@ module.exports = (app) => {
         })
     }
 
-    // Parse the current user, send them to the correct route
-    app.get('/newmessage', checkAuth, (req, res) => {
+    var clientsNeedingHelp = new Array("");
 
+    // Puts this user in the queue for clients needing help
+    app.get('/newmessage', checkAuth, (req, res) => {
+        if(req.user.kind == "Client"){
+            if(!clientsNeedingHelp.find(user => user == req.user.username)){
+                clientsNeedingHelp.push(req.user.username);
+            }
+            res.render("../views/pleasewait.ejs", {
+                username: req.user.username,
+                place: clientsNeedingHelp.length - 1
+            })
+        }
+        else res.redirect('/login');
     });
+
+    // Removes the user from the queue
+    app.post('/cancelsupport', checkAuth, (req, res) => {
+        clientsNeedingHelp = clientsNeedingHelp.splice(
+            req.body.place,
+            1
+        );
+        res.redirect('/observations');
+    })
+
+    // Lets a support user browse clientsNeedingHelp
+    app.get('/support', checkAuth, (req, res) => {
+        if(req.user.kind == "Support"){
+            res.render("../views/support.ejs", {
+                current: "requests",
+                username: req.user.username,
+                kind: "Support",
+                requests: clientsNeedingHelp
+            })
+        }
+    })
 
     // Message path
     app.get('/message/:otherName', checkAuth, (req, res) => {

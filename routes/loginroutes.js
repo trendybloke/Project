@@ -26,9 +26,9 @@ module.exports = (app) => {
         res.render('../views/login.ejs', {message: ""});
     });
 
-    app.get("/support", (req, res) => {
+    /*app.get("/support", (req, res) => {
         res.sendFile(path.join(__dirname, '../public/html', 'support.html'));
-    });
+    });*/
 
     // old login post
     /* app.post("/login/parse", (req, res) => {

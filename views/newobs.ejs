@@ -23,6 +23,13 @@
                     <option value="irregular">Irregular</option>
                 </select>
                 <br>
+                <label for="status">Status:</label>
+                <select id="status" name="status" required>
+                    <option value="" selected disabled>-- Please select --</option>
+                    <option value="visible">Visible</option>
+                    <option value="private">Private</option>
+                </select>
+                <br>
                 <label for="longitude">Coordinates:</label>
                 <input id="longitude" name="longitude" required type="number" step="any" placeholder="Longitude">
                 <input id="latitude" name="latitude" required type="number" step="any" placeholder="Latitude">

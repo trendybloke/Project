@@ -1,12 +1,12 @@
 <div class="navgrid">
     <div class="pagebuttons">
         <img src="../images/logo.jpg" , class="logo">
+        <% if(current == "browse") {%>
+            <a class="selected">Browse</a>
+        <%} else {%>
+            <a class="active" href='/observations'>Browse</a>
+        <%}%>
         <% if(kind == "Client") {%> 
-            <% if(current == "browse") {%>
-                <a class="selected">Browse</a>
-            <%} else {%>
-                <a class="active" href='/observations'>Browse</a>
-            <%}%>
             <% if(current == "post") {%>
                 <a class="selected">Post</a>
             <%} else {%>
@@ -15,9 +15,14 @@
             <% if(current == "support") {%>
                 <a class="selected">Support</a>
             <%} else {%>
-                <a class="active" href="/message/Support">Support</a>
+                <a class="active" href="/newmessage">Support</a>
             <%}%>
         <%} else if (kind == "Support") {%>
+            <% if(current == "requests") {%> 
+                <a class = "selected">Requests</a>
+            <% } else { %> 
+                <a class = "active" href="/support">Requests</a>
+            <%}%>
             <% if(current == "chat") {%>
                 <a class="selected">Chat</a>
             <%} else {%>

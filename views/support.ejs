@@ -1,0 +1,21 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link rel="stylesheet" href="../css/main.css">
+    <title>JWST Online</title>
+</head>
+<body>
+    <%- include('partials/navbar.ejs') %>
+    <% requests.forEach(function(request){ %>
+        <% if (request != "") { %>
+            <form method="post">
+                <h3><%=request%></h3>
+                <button>Message</button>
+            </form>
+        <%}%>
+    <%})%>
+</body>
+</html>

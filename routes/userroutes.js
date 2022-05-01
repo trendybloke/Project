@@ -8,6 +8,7 @@ module.exports = (app) => {
     const Observation = require('../models/Observation');
     const path = require('path');
     const passport = require('passport');
+    const moment = require('moment');
     passport.use(User.createStrategy());
     passport.serializeUser(User.serializeUser());
     passport.deserializeUser(User.deserializeUser());
@@ -36,7 +37,8 @@ module.exports = (app) => {
                             posts: postQry, 
                             comments: commentQry, 
                             username:req.user.username,
-                            kind: req.user.kind
+                            kind: req.user.kind,
+                            moment: moment
                     })
                 })
             })

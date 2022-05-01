@@ -18,6 +18,18 @@
             <h2>
                 Last edited: <%=moment(post.updatedAt).format('MMMM Do YYYY, h:mm:ss a')%>
             </h2>
+
+            <% if(post.username == username || kind == "Support") { %>
+                <form>
+                    <button>Edit post</button>
+                    <button formmethod="post" formaction="/observation/delete/<%=post._id%>">Delete post</button>
+                </form>
+            <% } %>
+
+            <% if(post.status != "visible") { %>
+                <h3>POST IS <%=post.status%></h3>
+            <% } %>
+
             <h3>By <a href="/user/<%=post.username%>"><%=post.username%></a></h3>
             <h3>Category: <%=post.category%></h3>
             <h3>

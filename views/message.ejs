@@ -6,6 +6,7 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <meta http-equiv="refresh" url="/observation/?id">
     <link rel="stylesheet" href="../css/main.css">
+    <script src="/socket.io/socket.io.js"></script>
     <title>JWST Online</title>
 </head>
 <body>
@@ -33,34 +34,13 @@
             <%})%>
         </div>
     </div>
+    <!--onsubmit="window.location.reload()"-->
     <form id="messageform" class="messageform" action="/message/<%=supportUser%>" method="post"
-        onsubmit="window.location.reload()" autocomplete="off">
+        autocomplete="off">
         <input id="content" name="content">
+        <input type="hidden" id="room" name="room" value="<%=chat._id%>">
         <button>Send</button>
     </form>
 </body>
-<script src="../javascript/message.js"></script>
-<script>
-    /*
-    // INCLUDE IN HEADER:
-    //     <script src="/socket.io/socket.io.js">
-    //
-
-    const socket = io();
-    const username = document.getElementById('username').innerHTML;
-    socket.emit('joining user', username);
-
-    const messageForm = document.getElementById('messageform');
-    const textInput = document.getElementById('content');
-
-    messageForm.addEventListener('submit', function(e) {
-        e.preventDefault();
-        if(textInput.value) {
-            socket.emit('new message', (data) => {
-
-            })
-        }
-    });
-    */
-</script>
+<script type="module" src="../javascript/message.js"></script>
 </html>

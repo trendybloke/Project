@@ -34,13 +34,20 @@ module.exports = (app) => {
         let analyses = req.query.analyses;
         let order = req.query.date;
 
+        let userCanSee;
+        if(req.user.kind == "Client")
+            userCanSee = ["visible", "flagged"]
+        else
+            userCanSee = ["visible", "flagged", "removed"]
+
         if (order == null) order = "desc"
         if (title == null) title = "";
         if (analyses == null) analyses = "";
 
         Observation.find({
             title: { $regex: `.*${title}.*`, $options: 'i' },
-            analyses: { $regex: `.*${analyses}.*`, $options: 'i' }
+            analyses: { $regex: `.*${analyses}.*`, $options: 'i' },
+            status: { $in: userCanSee }
         }).sort([["createdAt", order]])
             .exec((err, qry) => {
                 if (err) throw err;
@@ -57,20 +64,63 @@ module.exports = (app) => {
     app.get('/observation', checkAuth, (req, res) => {
         Observation.findById(req.query.id, (err, qry) => {
             if (err) throw err;
-            res.render('../views/observation.ejs', { 
-                post: qry, 
-                username:req.user.username,
-                current: "",
-                kind: req.user.kind,
-                moment: moment
-            });
+
+            var clientCanSeePost = qry.status == "visible" || qry.status == "flagged";
+
+            var isClientsPost = req.user.username == qry.username;
+
+            var supportCanSeePost = qry.status == "removed" && req.user.kind == "Support";
+
+            if(clientCanSeePost || supportCanSeePost || isClientsPost)
+                res.render('../views/observation.ejs', { 
+                    post: qry, 
+                    username:req.user.username,
+                    current: "",
+                    kind: req.user.kind,
+                    moment: moment
+                });
+            else if(qry.status == "removed" && req.user.kind == "Client")
+                res.render('../views/obserror.ejs', {
+                    username: req.user.username,
+                    current: "",
+                    kind: req.user.kind,
+                    message: "Post was removed."
+                });
+            else
+                res.render('../views/obserror.ejs', {
+                    username: req.user.username,
+                    current: "",
+                    kind: req.user.kind,
+                    message: "Access denied."
+                })
         });
+    })
+
+    app.post('/observation/delete/:id', checkAuth, (req, res) => {
+        Observation.findById(req.params.id, (err, qry) => {
+            if(err) throw err;
+
+            let usernameMatch = req.user.username == qry.username;
+            let supportUser = req.user.kind == "Support"
+
+            // Determine if requesting user is able to delete this post
+            if(usernameMatch || supportUser){
+                    // If  they are, then set the status to removed.
+                    qry.status = "removed";
+
+                    qry.save();
+
+                    res.redirect(`/observation/?id=${qry._id}`);
+            }
+            else
+                res.redirect('/observations');
+        })
     })
 
     app.post('/observation/new', checkAuth, (req, res) => {
         if (req.user.kind == "Client") {
             const newObs = new Observation({
-                username: "Username",
+                username: req.user.username,
                 category: req.body.category,
                 title: req.body.title,
                 galacticCoords: {
@@ -79,7 +129,8 @@ module.exports = (app) => {
                 },
                 description: req.body.description,
                 analyses: req.body.analyses,
-                comments: []
+                comments: [],
+                status: req.body.status
             });
 
             newObs.save((err) => {
@@ -94,7 +145,6 @@ module.exports = (app) => {
     app.post('/observation/comment', checkAuth, (req, res) => {
         // Expecting in body:
         // postid
-        // username - for now a constant of Username
         // content
 
         Observation.findById(req.body.postid, (err, qry) => {
