@@ -24,7 +24,17 @@ module.exports = (app) => {
             res.render('../views/newobs.ejs', {
                 current: "post",
                 username:req.user.username,
-                kind: "Client"
+                kind: "Client",
+                placeholders: {
+                    username: "",
+                    title: "",
+                    galacticCoords: {
+                        longitude: "",
+                        latitude: ""
+                    },
+                    description: "",
+                },
+                formaction: "/observation/new"
             });
     });
 
@@ -96,6 +106,39 @@ module.exports = (app) => {
         });
     })
 
+    app.get('/edit-observation/:id', checkAuth, (req, res) => {        
+        Observation.findById(req.params.id, (err, obs) => {
+            if(err) throw err;
+
+            let suppEditablePosts = obs.status == "removed" || obs.status == "flagged";
+
+            if(req.user.username != obs.username && (req.user.kind != "Support" || !suppEditablePosts))
+                res.render('../views/obserror.ejs', {
+                    username: req.user.username,
+                    current: "",
+                    kind: req.user.kind,
+                    message: "Access denied."
+                })
+            else{
+                res.render('../views/newobs.ejs', {
+                    current: "post",
+                    username:req.user.username,
+                    kind: "Client",
+                    placeholders: {
+                        username: obs.username,
+                        title: obs.title,
+                        galacticCoords: {
+                            longitude: obs.longitude,
+                            latitude: obs.latitude
+                        },
+                        description: obs.description,
+                    },
+                    formaction: `/observation/edit/${obs._id}`
+                })    
+            }
+        });
+    })
+
     app.post('/observation/delete/:id', checkAuth, (req, res) => {
         Observation.findById(req.params.id, (err, qry) => {
             if(err) throw err;
@@ -137,9 +180,40 @@ module.exports = (app) => {
                 if (err) throw err;
             })
 
-            // MAKE EJS
             res.redirect(301, `/observation/?id=${newObs._id}`)
         }
+    });
+
+    app.post('/observation/edit/:id', checkAuth, (req, res) => {
+        var filter = { _id: req.params.id }
+        var update = {
+            username: req.user.username,
+            category: req.body.category,
+            title: req.body.title,
+            galacticCoords: {
+                longitude: req.body.longitude,
+                latitude: req.body.latitude
+            },
+            description: req.body.description,
+            analyses: req.body.analyses,
+            comments: [],
+            status: req.body.status
+        }
+
+        Observation.findOneAndUpdate(filter, update, (err, obs) =>{
+            if(err) throw err;
+            res.redirect(`/observation/?id=${obs._id}`);
+        });
+    });
+
+    app.post('/observation/flag/:id', checkAuth, (req, res) => {
+        var filter = { _id: req.params.id }
+        var update = { status: "flagged" }
+
+        Observation.findOneAndUpdate(filter, update, (err, obs) => {
+            if(err) throw err;
+            res.redirect(`/observation/?id=${obs._id}`);
+        });
     });
 
     app.post('/observation/comment', checkAuth, (req, res) => {

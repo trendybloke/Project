@@ -19,12 +19,13 @@
                 Last edited: <%=moment(post.updatedAt).format('MMMM Do YYYY, h:mm:ss a')%>
             </h2>
 
-            <% if(post.username == username || kind == "Support") { %>
-                <form>
-                    <button>Edit post</button>
-                    <button formmethod="post" formaction="/observation/delete/<%=post._id%>">Delete post</button>
-                </form>
-            <% } %>
+            <form method="post" action="/observation/flag/<%=post._id%>">
+                    <% if(post.username == username || kind == "Support") { %>
+                        <button formmethod="get" formaction="/edit-observation/<%=post._id%>">Edit post</button>
+                        <button formmethod="post" formaction="/observation/delete/<%=post._id%>">Delete post</button>
+                    <% } %>
+                    <button>Flag post</button>
+            </form>
 
             <% if(post.status != "visible") { %>
                 <h3>POST IS <%=post.status%></h3>

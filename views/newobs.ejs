@@ -11,9 +11,9 @@
     <body>
         <%- include ('partials/navbar.ejs', {current:"post", username:username}); %>
         <div class="grid">
-            <form class="newpost" action="/observation/new" method="post">
+            <form class="newpost" action="<%=formaction%>" method="post">
                 <label for="title">Title:</label>
-                <input id="title" name="title" required>
+                <input id="title" name="title" value="<%=placeholders.title%>" required>
                 <br>
                 <label for="category">Category:</label>
                 <select id="category" name="category" required>
@@ -31,12 +31,12 @@
                 </select>
                 <br>
                 <label for="longitude">Coordinates:</label>
-                <input id="longitude" name="longitude" required type="number" step="any" placeholder="Longitude">
-                <input id="latitude" name="latitude" required type="number" step="any" placeholder="Latitude">
+                <input id="longitude" name="longitude" required type="number" step="any" placeholder="Longitude" value="<%=placeholders.galacticCoords.longitude%>">
+                <input id="latitude" name="latitude" required type="number" step="any" placeholder="Latitude" value="<%=placeholders.galacticCoords.latitude%>">
                 <br>
                 <label for="description">Description:</label>
                 <br>
-                <textarea id="description" name="description" required rows="8" cols="50"></textarea>
+                <textarea id="description" name="description" required rows="8" cols="50" value="<%=placeholders.description%>"></textarea>
                 <br>
                 <label for="analyses[0]">Analyses:</label>
                 <button type="button" id="plus" class="" onclick="addAnalysis()">+</button>

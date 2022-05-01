@@ -23,19 +23,21 @@
         <div class="userposts">
         <h1>Posts</h1>
         <%posts.forEach(function(post){ %>
-            <div class="post">
-                <h1><a href="/observation/?id=<%=post._id%>"><%=post.title%></a></h1>
-                <h2>Uploaded on: <%=moment(post.updatedAt).format('MMMM Do YYYY, h:mm:ss a')%></h2>
-                <% if(post.staus != "visible") { %>
-                    <h2>POST IS <%=post.status%></h2>
-                <% } %>
-                <h3>Category: <%=post.category%></h3>
-                <h3>
-                    Coordinates:<%=post.galacticCoords.longitude%> Long.,
-                    <%=post.galacticCoords.latitude%> Lat.
-                </h3>
-            </div>
-            <%})%>
+            <% if(post.status != "removed" || (post.status == "removed" && kind == "Support")) { %>
+                <div class="post">
+                    <h1><a href="/observation/?id=<%=post._id%>"><%=post.title%></a></h1>
+                    <h2>Uploaded on: <%=moment(post.updatedAt).format('MMMM Do YYYY, h:mm:ss a')%></h2>
+                    <% if(post.staus != "visible") { %>
+                        <h2>POST IS <%=post.status%></h2>
+                    <% } %>
+                    <h3>Category: <%=post.category%></h3>
+                    <h3>
+                        Coordinates:<%=post.galacticCoords.longitude%> Long.,
+                        <%=post.galacticCoords.latitude%> Lat.
+                    </h3>
+                </div>
+            <% } %>
+        <%})%>
         </div>
 
         <div class="usercomments">
