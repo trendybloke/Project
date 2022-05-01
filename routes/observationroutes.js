@@ -5,8 +5,22 @@ module.exports = (app) => {
     const Support = require('../models/Support');
     const Observation = require('../models/Observation');
     const passport = require('passport');
+    const fs = require('fs');
+    const mime = require('mime');
     const path = require('path');
     const moment = require('moment');
+    const multer = require('multer');
+
+    var storage = multer.diskStorage({
+        destination: (req, file, cb) => {
+            cb(null, path.join(__dirname, '../uploads'));
+        },
+        filename: (req, file, cb) => {
+            cb(null, `${file.fieldname}-${Date.now()}`);
+        }
+    });
+
+    var upload = multer({ storage: storage });
 
     passport.use(User.createStrategy());
     passport.serializeUser(User.serializeUser());
@@ -160,8 +174,10 @@ module.exports = (app) => {
         })
     })
 
-    app.post('/observation/new', checkAuth, (req, res) => {
+    app.post('/observation/new', upload.single('image'), checkAuth, (req, res) => {
         if (req.user.kind == "Client") {
+            let imagePath = path.join(__dirname, '../uploads/' + req.file.filename);
+
             const newObs = new Observation({
                 username: req.user.username,
                 category: req.body.category,
@@ -173,18 +189,23 @@ module.exports = (app) => {
                 description: req.body.description,
                 analyses: req.body.analyses,
                 comments: [],
-                status: req.body.status
+                status: req.body.status,
+                image: {
+                    data: fs.readFileSync(imagePath),
+                    contentType: mime.getType(imagePath)
+                }
             });
 
             newObs.save((err) => {
                 if (err) throw err;
+                res.redirect(301, `/observation/?id=${newObs._id}`)
             })
-
-            res.redirect(301, `/observation/?id=${newObs._id}`)
         }
     });
 
     app.post('/observation/edit/:id', checkAuth, (req, res) => {
+        let imagePath = path.join(__dirname, '/uploads/' + req.file.filename);
+
         var filter = { _id: req.params.id }
         var update = {
             username: req.user.username,
@@ -197,7 +218,11 @@ module.exports = (app) => {
             description: req.body.description,
             analyses: req.body.analyses,
             comments: [],
-            status: req.body.status
+            status: req.body.status,
+            image: {
+                data: fs.readFileSync(imagePath),
+                contentType: mime.getType(imagePath)
+            }
         }
 
         Observation.findOneAndUpdate(filter, update, (err, obs) =>{

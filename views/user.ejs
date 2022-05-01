@@ -27,7 +27,7 @@
                 <div class="post">
                     <h1><a href="/observation/?id=<%=post._id%>"><%=post.title%></a></h1>
                     <h2>Uploaded on: <%=moment(post.updatedAt).format('MMMM Do YYYY, h:mm:ss a')%></h2>
-                    <% if(post.staus != "visible") { %>
+                    <% if(post.status != "visible") { %>
                         <h2>POST IS <%=post.status%></h2>
                     <% } %>
                     <h3>Category: <%=post.category%></h3>

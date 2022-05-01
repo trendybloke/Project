@@ -1,6 +1,7 @@
 const mongoose = require('../config/dbconfig');
 const GalacticCoords = require('../models/GalacticCoordsSchema');
-const Comment = require('../models/CommentSchema')
+const Image = require('../models/Image');
+const Comment = require('../models/CommentSchema');
 
 // Observation definition
 const ObservationSchema = new mongoose.Schema({
@@ -20,6 +21,10 @@ const ObservationSchema = new mongoose.Schema({
         type: String,
         required: true,
         // unique: true
+    },
+    image : {
+        type: Image,
+        required: true
     },
     galacticCoords:{
         type: GalacticCoords,

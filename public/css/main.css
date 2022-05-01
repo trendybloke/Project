@@ -157,6 +157,14 @@
     text-align: left;
 }
 
+#post, #comments{
+    border: #0033cc 2px solid;
+    width: 50vw;
+    left: 50%;
+    right: 50%;
+    margin: auto;
+}
+
 textarea{
     height: 100px;
     width: auto;

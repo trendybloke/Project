@@ -12,6 +12,10 @@
 
         <div id="post">
             <h1><%=post.title%></h1>
+
+            <img src="data:image/<%=post.image.contentType%>;base64,
+                        <%=post.image.data.toString('base64')%>">
+
             <h2>
                 Uploaded on: <%=moment(post.createdAt).format('MMMM Do YYYY, h:mm:ss a')%>
             </h2>

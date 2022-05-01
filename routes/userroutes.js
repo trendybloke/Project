@@ -21,16 +21,16 @@ module.exports = (app) => {
     }
 
     app.get('/user/:name', checkAuth, (req, res) => {
-        let username = req.params.name;
+        let thisUsername = req.params.name;
         // Get user
-        User.findOne({username: username}, (err, userQry) => {
+        User.findOne({username: thisUsername}, (err, userQry) => {
             if(err) throw err;
             // Get users posts
-            Observation.find({username: username}, (err, postQry) => {
+            Observation.find({username: thisUsername}, (err, postQry) => {
                 if(err) throw err;
 
                 // Get user comments
-                Observation.find({comments: {username: username}}, (err, commentQry) => {
+                Observation.find({comments: {username: thisUsername}}, (err, commentQry) => {
                     if(err) throw err;
                     res.render('../views/user.ejs', {
                             user: userQry, 
