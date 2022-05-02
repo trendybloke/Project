@@ -30,7 +30,10 @@ module.exports = (app) => {
                 if(err) throw err;
 
                 // Get user comments
-                Observation.find({comments: {username: thisUsername}}, (err, commentQry) => {
+                Observation.find(
+                    {
+                        comments: {$elemMatch: {username: thisUsername}}
+                    }, (err, commentQry) => {
                     if(err) throw err;
                     res.render('../views/user.ejs', {
                             user: userQry, 

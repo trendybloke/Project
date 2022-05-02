@@ -42,11 +42,21 @@
 
         <div class="usercomments">
             <h1>Comments</h1>
-            <%comments.forEach(function(post){ %>
-            <div class="comment">
-                <h1><a href="/observation/?id=<%=post._id%>"><%=post.title%></a></h1>
-                <p><%=post.comment.content%></p>
-            </div>
+            <%comments.forEach(function(post) { %>
+                <%post.comments.forEach(function(comment) { %>
+                    <% if(comment.username == user.username) { %>
+                        <div class="comment">
+                            <h1><a href="/observation/?id=<%=post._id%>">On <%=post.title%></a></h1>
+                            <h3>
+                                <%=comment.content%>
+                            </h3>
+                            <h4>
+                                at <%=moment(comment.createdAt)
+                                .format('MMMM Do YYYY, h:mm:ss a')%>
+                            </h4>
+                        </div>  
+                    <%}%>
+                <% }) %>
             <%})%>
         </div>
     </div>
