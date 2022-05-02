@@ -11,6 +11,16 @@
         <%- include ('partials/navbar.ejs', {current:"none", username:username}); %>
         <div id="user">
             <h1><%=user.username%></h1>
+            <% if(kind == "Support") { %>
+                <form method="post">
+                    <% if(user.accountStatus != "suspended") { %>
+                        <button formaction="/suspend-user/<%=user.username%>">Suspend user</button>
+                    <% } else { %>
+                        <button formaction="/unsuspend-user/<%=user.username%>">Unsuspend user</button>
+                    <% } %>
+                </form>
+            <% } %>
+
             <h2><%=user.forename%> <%=user.surname%></h2>
             <% if(kind=="Client") {%>
                 <h3>Account type: <%=user.accountType%></h3>

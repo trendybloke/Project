@@ -19,7 +19,7 @@ module.exports = (app) => {
         }
         res.redirect('/login');
     }
-
+    
     app.get('/user/:name', checkAuth, (req, res) => {
         let thisUsername = req.params.name;
         // Get user
@@ -48,4 +48,35 @@ module.exports = (app) => {
         })
     });
 
+    app.post('/suspend-user/:name', checkAuth, (req, res) => {
+        if(req.user.kind == "Support"){
+            let suspendingUser = req.params.name;
+
+            User.findOne({username: suspendingUser}, (err, qry) => {
+                if(err) throw err;
+
+                qry.accountStatus = "suspended";
+
+                qry.save();
+
+                res.redirect(301, `/user/${suspendingUser}`);
+            });
+        }
+    });
+
+    app.post('/unsuspend-user/:name', checkAuth, (req, res) => {
+        if(req.user.kind == "Support"){
+            let suspendedUser = req.params.name;
+
+            User.findOne({username: suspendedUser}, (err, qry) => {
+                if(err) throw err;
+
+                qry.accountStatus = "active";
+
+                qry.save();
+
+                res.redirect(301, `/user/${suspendedUser}`);
+            });
+        }
+    });
 }
