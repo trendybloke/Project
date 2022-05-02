@@ -26,6 +26,10 @@
     border: 2px solid #0033cc
 }
 
+.comment{
+    padding: 8px;
+}
+
 .filters{
     display: block;
     margin-left: 30%;
@@ -163,6 +167,19 @@
     left: 50%;
     right: 50%;
     margin: auto;
+}
+
+#post {
+    padding: 8px;
+}
+
+#post > img {
+    display: block;
+    height: auto;
+    width: auto;
+    max-width:40vw;
+    margin: auto;
+    border: #0033cc 5px solid;
 }
 
 textarea{

@@ -25,8 +25,12 @@
 
             <form method="post" action="/observation/flag/<%=post._id%>">
                     <% if(post.username == username || kind == "Support") { %>
-                        <button formmethod="get" formaction="/edit-observation/<%=post._id%>">Edit post</button>
-                        <button formmethod="post" formaction="/observation/delete/<%=post._id%>">Delete post</button>
+                        <button formmethod="get" formaction="/edit-observation/<%=post._id%>">
+                            Edit post
+                        </button>
+                        <button formmethod="post" formaction="/observation/delete/<%=post._id%>">
+                            Delete post
+                        </button>
                     <% } %>
                     <button>Flag post</button>
             </form>
@@ -58,6 +62,17 @@
                         <a><%=moment(comment.createdAt).format('MMMM Do YYYY, h:mm:ss a')%></a>
                     </h3> 
                     <p><%=comment.content%></p>
+                    <% if((post.username == username || kind == "Support" || comment.username == username)
+                         && comment.content != "[deleted]") { %>
+                        <form method="post" action="/observation/remove-comment"
+                            onsubmit="window.location.reload()">
+                            <input name="postid" id="postid" type="hidden"
+                            value="<%=post._id%>">
+                            <input name="commentid" id="commentid" type="hidden" 
+                            value="<%=comment._id%>">
+                            <button>Remove comment</button>
+                        </form>
+                    <% } %>
                 </div>
             <%})%>
             <form action="/observation/comment" method="post" onsubmit="window.location.reload()">

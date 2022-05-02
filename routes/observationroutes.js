@@ -259,4 +259,22 @@ module.exports = (app) => {
             res.redirect(301, `/observation/?id=${req.body.postid}`);
         })
     });
+
+    app.post('/observation/remove-comment', checkAuth, (req, res) => {
+        Observation.findById(req.body.postid, (err, qry) => {
+            if(err) throw err;
+
+            // Find comment
+            const found = qry.comments.find(comment => comment._id == req.body.commentid)
+
+            // Overwrite
+            found.username ="[deleted]";
+            found.content = "[deleted]";
+
+            // Save query
+            qry.save();
+
+            res.redirect(301, `/observation/?id=${req.body.postid}`);
+        })
+    });
 }
