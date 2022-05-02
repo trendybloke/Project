@@ -10,8 +10,9 @@ module.exports = (app) => {
     const moment = require('moment');
 
     checkAuth = (req, res, next) => {
-        if (req.isAuthenticated()) {
-            return next();
+        if(req.isAuthenticated()){
+            if(req.user.accountStatus != "suspended")
+                return next();
         }
         res.redirect('/login');
     }

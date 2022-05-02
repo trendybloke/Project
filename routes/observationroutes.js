@@ -27,8 +27,9 @@ module.exports = (app) => {
     passport.deserializeUser(User.deserializeUser());
 
     checkAuth = (req, res, next) => {
-        if (req.isAuthenticated()) {
-            return next();
+        if(req.isAuthenticated()){
+            if(req.user.accountStatus != "suspended")
+                return next();
         }
         res.redirect('/login');
     }
