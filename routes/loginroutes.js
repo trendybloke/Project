@@ -103,9 +103,11 @@ module.exports = (app) => {
                 Client.findOne({username: req.body.username}, 
                     (err, clientUser) => {
                     if(err) throw err;
-                    
+
                     // User is client, so redirect to browse
                     if(clientUser !== null){
+                        clientUser.accountStatus = "active";
+                        clientUser.save();
                         res.redirect(301, '/observations')
                     }
     
@@ -119,6 +121,8 @@ module.exports = (app) => {
                     
                     // User is support member, so redirect to support
                     if(supportUser !== null){
+                        supportUser.accountStatus = "active";
+                        supportUser.save();
                         res.redirect(301, `/user/${req.body.username}`);
                     }
                 });
@@ -127,6 +131,12 @@ module.exports = (app) => {
     });
 
     app.get("/logout", (req, res) => {
+        User.findOne({username: req.user.username}, (err, qry) => {
+            if(err) throw err;
+            qry.accountStatus = "inactive";
+            qry.save()
+        });
+
         req.logout();
         delete req.session;
         delete req.user;
