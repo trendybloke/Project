@@ -33,12 +33,11 @@
             <%})%>
         </div>
     </div>
-    <!--onsubmit="window.location.reload()"-->
-    <form id="messageform" class="messageform" action="/message/<%=chat._id%>" method="post"
-        autocomplete="off">
+    <form id="messageform" class="messageform" action="/message/<%=chat._id%>" method="post">
+        <input id="username" name="username" type="hidden" value<%=username%>>
         <input id="content" name="content">
         <input type="hidden" id="room" name="room" value="<%=chat._id%>">
-        <Button form="messageform" onclick="messageform.submit()">Send</Button>
+        <input id="sendbutton" type="submit" value="Send">
     </form>
     <script src="/socket.io/socket.io.js"></script>
 </body>

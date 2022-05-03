@@ -104,11 +104,19 @@ module.exports = (app) => {
             projection: {chats: {$elemMatch: {_id: mongoose.Types.ObjectId(req.params.chatid)}}}
         }, (err, qry) => {
             if(err) throw err;
-            qry.chats[0].messages.push({
-                senderUsername: req.user.username,
-                content: req.body.content
-            });
+
+            if(qry.chats[0] != null){
+                
+                qry.chats[0].messages.push({
+                    senderUsername: req.user.username,
+                    content: req.body.content
+                });
+
+                qry.save();            }
         })
+
+        // Redirect
+        res.redirect(`/message/${req.params.chatid}`);
     })
 
     // Old message paths

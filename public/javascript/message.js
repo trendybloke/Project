@@ -13,7 +13,8 @@ const socket = io('localhost:3000');
 
 const username = document.getElementById('username').innerHTML;
 const room = document.getElementById('room').value;
-socket.emit('joining user', username);
+
+socket.emit('login', {name: username, room: room});
 
 const messages = document.getElementById('messages');
 const messageForm = document.getElementById('messageform');
@@ -25,7 +26,7 @@ messageTemplate = (sendingUser, content, time) => {
     else divclass = "theirMessage";
     
     return `<div class="${divclass}">
-                ${username}
+                ${sendingUser}
                 <div class="${divclass}Content">
                     ${content}
                 </div>
@@ -33,32 +34,41 @@ messageTemplate = (sendingUser, content, time) => {
             </div>` 
 }
 
+
 messageForm.addEventListener('submit', function(e) {
     e.preventDefault();
+
+    let msgContent;
+
     if(textInput.value) {
-        let msgContent = textInput.value;
+        msgContent = textInput.value;
     } else {
-        let msgContent = "";
+        msgContent = "";
     }
 
     console.log("Sending message...");
 
-    socket.emit('send-message', () => {
-        console.log(`${username} sends a message...`)
-        return {
-            message: {
-                username: username,
-                content: msgContent,
-                sent: moment(Date.now()).format("hh:mm a DD MMM YYYY")
-            },
-            room: 'testroom'
-        }
-    })
+    let msg = {
+        message: {
+            username: username,
+            content: msgContent,
+            time: Date.now()
+        },
+        room: room
+    }
+
+    socket.emit('send-message', msg)
     
+    console.log("Message sent.")
+    console.log(`Date: ${msg.time}`)
+
+    e.currentTarget.submit();
+
 });
 
+
 socket.on('connect', (data) => {
-    socket.emit('login', {name: username, room: 'testroom'})
+    socket.emit('login', {name: username, room: room})
 });
 
 socket.on('messages', (data) => {
@@ -66,10 +76,10 @@ socket.on('messages', (data) => {
 });
 
 socket.on('new-message', (data) => {
-    console.log(`${username} received the message...`)
     messages.innerHTML += messageTemplate(
         data.username,
         data.content,
         data.time
     )
+    msgDiv.scrollTop = msgDiv.scrollHeight;
 })

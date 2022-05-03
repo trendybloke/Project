@@ -11,6 +11,8 @@ const User = require('./models/User');
 const session = require('express-session');
 const passport = require("passport");
 
+const moment = require('moment');
+
 app.use(express.static(__dirname + '/public'));
 app.use(express.urlencoded({ extended: true }));
 app.use(cors());
@@ -61,19 +63,20 @@ app.get("/", (req, res) => {
 
 // Handles connection events
 io.on('connection', (socket) => {
-    console.log(`Someone connected...`);
-
     socket.on('login', ({name, room}, callback) => {
         socket.join(room);
         io.to(room).emit('messages', `${name} has joined room ${room}.`)
     });
 
     socket.on('send-message', ({message, room}, callback) => {
-        io.to(room).emit('new-message', message);
+        io.to(room).emit('new-message', {
+            username: message.username,
+            content: message.content,
+            time: moment(message.time).format('hh:mm a DD MMM YYYY')
+        });
     });
 
     socket.on('disconnect', () => {
-        console.log("Someone disconnected...");
     })
 
 });
