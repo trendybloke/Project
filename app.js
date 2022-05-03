@@ -70,7 +70,7 @@ app.post('/newmessage', checkAuth, (req, res) => {
             if(err) throw err;
 
             if(qry != null){
-                let chatid = qry.chats[0]._id;
+                let chatid = qry.chats.find(chat => chat.clientUsername = req.body.requestname)._id;
                 io.to(`room${req.body.place}`).emit('move-room', {chatid: chatid})
 
                 res.redirect(301, `/message/${chatid}`);
@@ -81,7 +81,7 @@ app.post('/newmessage', checkAuth, (req, res) => {
                     {
                         clientUsername: req.body.request,
                         messages: [],
-                        _id: new mongoose.Types.ObjectId(),
+                        _id: mongoose.Types.ObjectId(),
                         createdAt: Date.now(),
                         updatedAt: Date.now()
                     };

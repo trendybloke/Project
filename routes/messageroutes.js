@@ -73,7 +73,7 @@ module.exports = (app) => {
         (err, qry) => {
             if(err) throw err;
             
-            if(qry == null)
+            if(qry == null) 
                 res.render('../views/obserror.ejs', {
                     username: req.user.username,
                     current: "",
@@ -81,11 +81,13 @@ module.exports = (app) => {
                     message: "Chat does not exist."
                 });
 
+            var currentChat = qry.chats.find(chat => chat._id = req.params.chatid)
+
             res.render('../views/message.ejs', {
                 current: "",
                 username: req.user.username,
                 kind: req.user.kind,
-                chat: qry.chats[0],
+                chat: currentChat,
                 moment: moment
             })
         })  
@@ -102,14 +104,23 @@ module.exports = (app) => {
         }, (err, qry) => {
             if(err) throw err;
 
-            if(qry.chats[0] != null){
-                
+            if(qry.chats != null){
+                /*
                 qry.chats[0].messages.push({
                     senderUsername: req.user.username,
                     content: req.body.content
                 });
+                */
 
-                qry.save();            }
+                var currentChat = qry.chats.find(chat => chat._id = req.params.chatid)
+
+                currentChat.messages.push({
+                    senderUsername: req.user.username,
+                    content: req.body.content
+                })
+
+                qry.save();            
+            }
         })
 
         // Redirect
