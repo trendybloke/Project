@@ -6,7 +6,6 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <meta http-equiv="refresh" url="/observation/?id">
     <link rel="stylesheet" href="../css/main.css">
-    <script src="/socket.io/socket.io.js"></script>
     <title>JWST Online</title>
 </head>
 <body>
@@ -35,12 +34,13 @@
         </div>
     </div>
     <!--onsubmit="window.location.reload()"-->
-    <form id="messageform" class="messageform" action="/message/<%=supportUser%>" method="post"
+    <form id="messageform" class="messageform" action="/message/<%=chat._id%>" method="post"
         autocomplete="off">
         <input id="content" name="content">
         <input type="hidden" id="room" name="room" value="<%=chat._id%>">
-        <button>Send</button>
+        <Button form="messageform" onclick="messageform.submit()">Send</Button>
     </form>
+    <script src="/socket.io/socket.io.js"></script>
 </body>
-<script type="module" src="../javascript/message.js"></script>
+<script src="../javascript/message.js"></script>
 </html>

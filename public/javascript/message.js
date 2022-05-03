@@ -12,6 +12,7 @@ const socket = io(); */
 const socket = io('localhost:3000');
 
 const username = document.getElementById('username').innerHTML;
+const room = document.getElementById('room').value;
 socket.emit('joining user', username);
 
 const messages = document.getElementById('messages');
@@ -35,15 +36,33 @@ messageTemplate = (sendingUser, content, time) => {
 messageForm.addEventListener('submit', function(e) {
     e.preventDefault();
     if(textInput.value) {
-        socket.emit('send-message', (message) => {
-            console.log(`${username} sends a message...`)
-            return {
-                username: username,
-                content: textInput.value,
-                sent: moment(Date.now()).format("hh:mm a DD MMM YYYY")
-            }
-        })
+        let msgContent = textInput.value;
+    } else {
+        let msgContent = "";
     }
+
+    console.log("Sending message...");
+
+    socket.emit('send-message', () => {
+        console.log(`${username} sends a message...`)
+        return {
+            message: {
+                username: username,
+                content: msgContent,
+                sent: moment(Date.now()).format("hh:mm a DD MMM YYYY")
+            },
+            room: 'testroom'
+        }
+    })
+    
+});
+
+socket.on('connect', (data) => {
+    socket.emit('login', {name: username, room: 'testroom'})
+});
+
+socket.on('messages', (data) => {
+    console.log(data);
 });
 
 socket.on('new-message', (data) => {

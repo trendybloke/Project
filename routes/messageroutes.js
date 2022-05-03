@@ -60,7 +60,59 @@ module.exports = (app) => {
         }
     })
 
-    // Message path
+    // Retrieves message.ejs
+    app.get('/message/:chatid', checkAuth, (req, res) => {
+        // Build chat id
+        let chatid = new mongoose.Types.ObjectId(req.params.chatid);
+
+        // Find and load the chat room
+        Support.findOne(
+            {
+                // Filter
+                chats: {$elemMatch: {_id: chatid}},
+                //Project
+                projection: {chats: {$elemMatch: {_id: chatid}}}
+            },
+        (err, support) => {
+            if(err) throw err;
+
+            if(support.chats[0] == null)
+                res.render('../views/obserror.ejs', {
+                    username: req.user.username,
+                    current: "",
+                    kind: req.user.kind,
+                    message: "Chat does not exist."
+                });
+
+            res.render('../views/message.ejs', {
+                current: "",
+                username: req.user.username,
+                kind: req.user.kind,
+                chat: support.chats[0],
+                moment: moment
+            })
+        })  
+    })
+
+    // Sends a message to a room
+    app.post('/message/:chatid', checkAuth, (req, res) => {
+        // Find the chat id
+        Support.findOne(
+            // Filter
+            {chats: {$elemMatch: {_id: mongoose.Types.ObjectId(req.params.chatid)}},
+            //Project
+            projection: {chats: {$elemMatch: {_id: mongoose.Types.ObjectId(req.params.chatid)}}}
+        }, (err, qry) => {
+            if(err) throw err;
+            qry.chats[0].messages.push({
+                senderUsername: req.user.username,
+                content: req.body.content
+            });
+        })
+    })
+
+    // Old message paths
+    /*
     app.get('/message/:otherName', checkAuth, (req, res) => {
         // Client messaging support
         if(req.user.kind == "Client") {
@@ -140,4 +192,5 @@ module.exports = (app) => {
         })
 
     })
+    */
 }
