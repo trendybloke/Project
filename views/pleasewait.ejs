@@ -8,12 +8,33 @@
     <title>Please wait...</title>
 </head>
 <body class="postgrid">
-    <form class="newpost" method="post">
+    <form class="newpost" id="waitform">
         <h1>Please wait...</h1>
         <h3>A support member will be with you shortly!</h3>
-        <input type="hidden" value="<%=username%>">
-        <input type="hidden" value="<%=place%>">
-        <button formaction="/cancelsupport">Cancel</button>
+        <input type="hidden" value="<%=username%>" id="username">
+        <input id="place" type="hidden" value="<%=place%>">
+        <button formaction="/cancelsupport" formmethod="post">Cancel</button>
     </form>
+    <script src="/socket.io/socket.io.js"></script>
 </body>
+<script>
+    const socket = io('localhost:3000');
+    const username = document.getElementById('username').value;
+    const place = document.getElementById('place').value;
+
+    var form = document.getElementById('waitform');
+
+    socket.on('connect', (data) => {
+        console.log(`Connected to server.\nName: ${username}\nRoom: room${place}`)
+        socket.emit('login', {name: username, room: `room${place}`})
+    });
+
+    socket.on('move-room', (data) => {
+        console.log('Received move-room call...')
+        form.action = `/message/${data.chatid}`;
+        form.method = "get";
+        form.submit();
+    });
+
+</script>
 </html>

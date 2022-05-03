@@ -12,6 +12,9 @@ const session = require('express-session');
 const passport = require("passport");
 
 const moment = require('moment');
+const Client = require('./models/Client');
+const Support = require('./models/Support');
+const Chat = require('./models/Chat');
 
 app.use(express.static(__dirname + '/public'));
 app.use(express.urlencoded({ extended: true }));
@@ -54,6 +57,51 @@ require('./routes/messageroutes')(app);
 // Home redirect to login
 app.get("/", (req, res) => {
     res.redirect("/login")
+});
+
+// Moves a Client and Support to a message room when the support clicks the client's name
+app.post('/newmessage', checkAuth, (req, res) => {
+    if(req.user.kind == "Support"){
+        // See if chat exists with this user
+        Support.findOne(
+            { chats: {$elemMatch: {clientUsername: req.body.requestname}} },
+            { chats: {$elemMatch: {clientUsername: req.body.requestname}} }
+        , (err, qry) => {
+            if(err) throw err;
+
+            if(qry != null){
+                let chatid = qry.chats[0]._id;
+                io.to(`room${req.body.place}`).emit('move-room', {chatid: chatid})
+
+                res.redirect(301, `/message/${chatid}`);
+            }
+            else{
+                // Create new chat, 
+                var newChat = 
+                    {
+                        clientUsername: req.body.request,
+                        messages: [],
+                        _id: new mongoose.Types.ObjectId(),
+                        createdAt: Date.now(),
+                        updatedAt: Date.now()
+                    };
+
+                // Push chat to requesting support member,
+                Support.findOne({username: req.user.username}, (err,support) => {
+                    if(err) throw err;
+                    support.chats.push(newChat);
+                    support.save();
+                })
+
+                // Then issue redirect
+                io.to(`room${req.body.place}`).emit('move-room', {chatid: newChat._id})
+                
+                res.redirect(301, `/message/${newChat._id}`);
+            }
+        })
+        
+
+    }
 });
 
 // Listen for webserver requests

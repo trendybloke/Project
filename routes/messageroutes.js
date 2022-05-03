@@ -1,3 +1,4 @@
+
 module.exports = (app) => {
     const mongoose = require('../config/dbconfig');
     const User = require('../models/User');
@@ -8,7 +9,7 @@ module.exports = (app) => {
     const passport = require('passport');
     const path = require('path');
     const moment = require('moment');
-
+    
     checkAuth = (req, res, next) => {
         if(req.isAuthenticated()){
             if(req.user.accountStatus != "suspended")
@@ -55,7 +56,7 @@ module.exports = (app) => {
                 current: "requests",
                 username: req.user.username,
                 kind: "Support",
-                requests: clientsNeedingHelp
+                requests: clientsNeedingHelp 
             })
         }
     })
@@ -67,16 +68,12 @@ module.exports = (app) => {
 
         // Find and load the chat room
         Support.findOne(
-            {
-                // Filter
-                chats: {$elemMatch: {_id: chatid}},
-                //Project
-                projection: {chats: {$elemMatch: {_id: chatid}}}
-            },
-        (err, support) => {
+            { chats: {$elemMatch: {_id: chatid}} },
+            { chats: {$elemMatch: {_id: chatid}} },
+        (err, qry) => {
             if(err) throw err;
-
-            if(support.chats[0] == null)
+            
+            if(qry == null)
                 res.render('../views/obserror.ejs', {
                     username: req.user.username,
                     current: "",
@@ -88,7 +85,7 @@ module.exports = (app) => {
                 current: "",
                 username: req.user.username,
                 kind: req.user.kind,
-                chat: support.chats[0],
+                chat: qry.chats[0],
                 moment: moment
             })
         })  

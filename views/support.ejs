@@ -9,13 +9,25 @@
 </head>
 <body>
     <%- include('partials/navbar.ejs') %>
-    <% requests.forEach(function(request){ %>
+    <% requests.forEach(function(request, i){ %>
         <% if (request != "") { %>
-            <form method="post">
+            <form id="request<%i%>" method="post" action="/newmessage" onsubmit="formSubmit(request, i)">
+                <input type="hidden" id="place" name="place" value="<%=i%>">
+                <input type="hidden" id="requestname" name="requestname" value="<%=request%>">
                 <h3><%=request%></h3>
                 <button>Message</button>
             </form>
         <%}%>
     <%})%>
+    <script src="/socket.io/socket.io.js"></script>
 </body>
+<script>
+    const socket = io('localhost:3000');
+    const username = document.getElementById('username').innerHTML;
+
+    formSubmit = (request, place) => {
+        // let form = document.getElementById(`request${place}`)
+    }
+
+</script>
 </html>
