@@ -30,7 +30,7 @@
             <h3>Status: <%=user.accountStatus%></h3>
 
             <% if(user.username == username || kind == "Support") { %>
-                <form method="get" action="/user/edit/<%=user.username%>">
+                <form method="get" action="/edit-user/<%=user.username%>">
                     <button>Edit profile</button>
                 </form>
             <% } %>

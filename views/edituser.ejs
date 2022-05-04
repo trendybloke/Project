@@ -8,28 +8,27 @@
     <title>JWST Online</title>
 </head>
 <body>
-    <form class="grid" action="/user/edit/<%=user.username%>" method="post" id="editform">
-        <img src="../images/logo.jpg" class="logo">
+    <form class="grid" action="/edit-user/<%=user.username%>" method="post" id="editform">
         <div class="title">
             <h1>EDIT PROFILE</h1>
         </div>
         <div class="formdiv" id="userinfo">
             <label for="forename">Forename :</label>
-            <input id="forename" name="forename" value="<%user.forename%>" required>
+            <input id="forename" name="forename" value="<%=user.forename%>" required>
             <br>
             <label for="surname">Surname :</label>
-            <input id="surname" name="surname" value="<%user.surname%>" required>
+            <input id="surname" name="surname" value="<%=user.surname%>" required>
             <br>
             <label for="username">Username :</label>
-            <input id="username" name="username" value="<%user.username%>" disabled>
+            <input id="username" name="username" value="<%=user.username%>" disabled>
             <br>
             <label for="email">Email Address :</label>
             <input id="email" name="email" disabled
-                   type="email" value="<%user.email%>">
+                   type="email" value="<%=user.email%>">
             <br>
             <label for="phone">Phone number :</label>
             <input id="phone" name="phone" type="tel"
-                   pattern="" value="<%user.phoneNumber%>">
+                   pattern="" value="<%=user.phoneNumber%>">
             <br>
             <label for="notif">Notificiation Preference :</label>
             <select name="notif" id="notif" requried>
@@ -40,19 +39,19 @@
         </div>
         <div class="formdiv" id="useraddress">
             <label for="houseName">House name / number :</label>
-            <input id="houseName" name="houseName" required value="<%user.houseName%>">
+            <input id="houseName" name="houseName" required value="<%=user.houseName%>">
             <br>
             <label for="street">Street :</label>
-            <input id="street" name="street" required value="<%user.street%>">
+            <input id="street" name="street" required value="<%=user.street%>">
             <br>
             <label for="town">Town :</label>
-            <input id="town" name="town" required value="<%user.town%>">
+            <input id="town" name="town" required value="<%=user.town%>">
             <br>
             <label for="postcode">Postcode :</label>
-            <input id="postcode" name="postcode" required value="<%user.postcode%>">
+            <input id="postcode" name="postcode" required value="<%=user.postcode%>">
             <br>
             <label for="city">City :</label>
-            <input id="city" name="city" required value="<%user.city%>">
+            <input id="city" name="city" required value="<%=user.city%>">
             <br>
             <label for="country">Country :</label>
             <select id="country" name="country" required>
@@ -309,10 +308,10 @@
         <div class="formdiv" id="userbank">
             <label for="cardnum">Card number (12 / 16 numbers) :</label>
             <input id="cardnum" name="cardnum" required type="number"
-                    value="**** **** ****<%user.lastFourDigits%>"minlength="12" maxlength="16">
+                    value="<%=user.lastFourDigits%>"minlength="12" maxlength="16">
             <br>
             <label for="cardname">Name on Card :</label>
-            <input id="cardname" name="cardname" value="<%user.cardName%>" required>
+            <input id="cardname" name="cardname" value="<%=user.cardName%>" required>
             <br>
             <label>Expiry :</label>
             <select id="expiremonth" name="expiremonth" required>

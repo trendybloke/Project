@@ -51,7 +51,7 @@ module.exports = (app) => {
         })
     });
 
-    app.get('/user/edit/:name', checkAuth, (req, res) => {
+    app.get('/edit-user/:name', checkAuth, (req, res) => {
         if(req.user.username != req.params.name && req.user.kind != "Support"){
             res.render('../views/obserror.ejs', {
                 username: req.user.username,
@@ -86,16 +86,18 @@ module.exports = (app) => {
         })
     })
 
-    app.post('/user/edit/:name', checkAuth, async (req, res) => {
-        if(req.user.username != req.params.name || req.user.kind != "Support"){
+    app.post('/edit-user/:name', checkAuth, (req, res) => {
+        var thisUser = req.params.name;
+
+        if(req.user.username != thisUser && req.user.kind != "Support"){
             res.render('../views/obserror.ejs', {
                 username: req.user.username,
                 current: "",
                 kind: req.user.kind,
                 message: "Access denied."
             });
+            return;
         }
-
         // Get last four digits of cardnum
         let lastFourDigit = req.body.cardnum.substr(req.body.cardnum - 4);
 
@@ -106,7 +108,7 @@ module.exports = (app) => {
         const newSecNumHash = bcrypt.hashSync(req.body.ccv, salt);
 
 
-        await User.findOneAndUpdate(
+        User.findOneAndUpdate(
             // Filter
             {username: req.params.name},
             // Update
@@ -135,7 +137,7 @@ module.exports = (app) => {
                 }                
             }
         ).then(() => {
-            res.redirect(`/user/${req.params.name}`)
+            res.redirect(`/user/${thisUser}`)
         })
     })
 
