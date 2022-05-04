@@ -68,35 +68,46 @@ app.post('/newmessage', checkAuth, (req, res) => {
             { chats: {$elemMatch: {clientUsername: req.body.requestname}} }
         , (err, qry) => {
             if(err) throw err;
-
+            
+            // Found existing chat
             if(qry != null){
                 let chatid = qry.chats.find(chat => chat.clientUsername = req.body.requestname)._id;
                 io.to(`room${req.body.place}`).emit('move-room', {chatid: chatid})
 
                 res.redirect(301, `/message/${chatid}`);
             }
-            else{
+            // Did not find existing chat
+            else if(qry == null){
                 // Create new chat, 
                 var newChat = 
                     {
+                        _id: new mongoose.Types.ObjectId(),
                         clientUsername: req.body.requestname,
                         messages: [],
-                        _id: mongoose.Types.ObjectId(),
-                        createdAt: Date.now(),
-                        updatedAt: Date.now()
                     };
 
                 // Push chat to requesting support member,
                 Support.findOne({username: req.user.username}, (err,support) => {
                     if(err) throw err;
+                    /*
                     support.chats.push(newChat);
-                    support.save();
+                    */
+                    Support.updateOne(
+                        { _id: support._id },
+                        { $push: { chats: newChat}},
+                        (err, result) => {
+                            if(err) throw err;
+                            support.save()
+                            .then(() => {
+                                // Then issue redirect
+                                io.to(`room${req.body.place}`).emit('move-room', {chatid: newChat._id})
+                                
+                                res.redirect(301, `/message/${newChat._id}`);
+                            });
+                        }
+                    )
                 })
 
-                // Then issue redirect
-                io.to(`room${req.body.place}`).emit('move-room', {chatid: newChat._id})
-                
-                res.redirect(301, `/message/${newChat._id}`);
             }
         })
         

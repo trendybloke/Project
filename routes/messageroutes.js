@@ -97,37 +97,22 @@ module.exports = (app) => {
     })
 
     // Sends a message to a room
-    app.post('/message/:chatid', checkAuth, (req, res) => {
-        // Find the chat id
-        Support.findOne(
+    app.post('/message/:chatid', checkAuth, async (req, res) => {
+        await Support.findOneAndUpdate(
             // Filter
-            {chats: {$elemMatch: {_id: mongoose.Types.ObjectId(req.params.chatid)}},
-            //Project
-            projection: {chats: {$elemMatch: {_id: mongoose.Types.ObjectId(req.params.chatid)}}}
-        }, (err, qry) => {
-            if(err) throw err;
-
-            if(qry.chats != null){
-                /*
-                qry.chats[0].messages.push({
-                    senderUsername: req.user.username,
-                    content: req.body.content
-                });
-                */
-
-                var currentChat = qry.chats.find(chat => chat._id = req.params.chatid)
-
-                currentChat.messages.push({
-                    senderUsername: req.user.username,
-                    content: req.body.content
-                })
-
-                qry.save();            
+            {chats: {$elemMatch: {_id: req.params.chatid}}},
+            // Update
+            {$push: {'chats.$.messages': { senderUsername: req.user.username, content: req.body.content }}},
+            //{ $push: {chats: {messages: { senderUsername: req.user.username, content: req.body.content }}}},
+            // Options
+            {
+                projection: {
+                    chats: {$elemMatch: {_id: req.params.chatid}}
+                }
             }
-        })
-
-        // Redirect
-        res.redirect(`/message/${req.params.chatid}`);
+        ).then(() => {
+            res.redirect(`/message/${req.params.chatid}`);
+        });
     })
 
     // Old message paths
