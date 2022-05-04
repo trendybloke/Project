@@ -177,7 +177,8 @@
     padding: 8px;
 }
 
-#post > img {
+#post > img,
+.post > img {
     display: block;
     height: auto;
     width: auto;

@@ -29,6 +29,8 @@
         <%posts.forEach(function(post){ %>
         <div class="post">
             <h1><a href="/observation/?id=<%=post._id%>"><%=post.title%></a></h1>
+            <img src="data:image/<%=post.image.contentType%>;base64,
+            <%=post.image.data.toString('base64')%>">
             <h2>Uploaded on: <%=moment(post.updatedAt).format('MMMM Do YYYY, h:mm:ss a')%></h2>
             <% if(post.status != "visible") { %>
                 <h3>POST IS <%=post.status%></h3>
