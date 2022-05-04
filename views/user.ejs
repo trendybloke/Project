@@ -28,6 +28,13 @@
                 <h3>Account type: Support</h3>
             <% } %>
             <h3>Status: <%=user.accountStatus%></h3>
+
+            <% if(user.username == username || kind == "Support") { %>
+                <form method="get" action="/user/edit/<%=user.username%>">
+                    <button>Edit profile</button>
+                </form>
+            <% } %>
+
         </div>
         <div class="usergrid">
         <div class="userposts">

@@ -9,6 +9,8 @@ module.exports = (app) => {
     const path = require('path');
     const passport = require('passport');
     const moment = require('moment');
+    const bcrypt = require('bcrypt');
+    const saltRounds = 10;
     passport.use(User.createStrategy());
     passport.serializeUser(User.serializeUser());
     passport.deserializeUser(User.deserializeUser());
@@ -48,6 +50,94 @@ module.exports = (app) => {
             })
         })
     });
+
+    app.get('/user/edit/:name', checkAuth, (req, res) => {
+        if(req.user.username != req.params.name && req.user.kind != "Support"){
+            res.render('../views/obserror.ejs', {
+                username: req.user.username,
+                current: "",
+                kind: req.user.kind,
+                message: "Access denied."
+            });
+            return;
+        }
+
+        // Get the user
+        User.findOne({username: req.params.name}, (err, qry) => {
+            if(err) throw err;
+
+            // Render edit page
+            res.render('../views/edituser', {
+                user:{
+                    forename: qry.forename,
+                    surname: qry.surname,
+                    username: qry.username,
+                    email: qry.email,
+                    phoneNumber: qry.phoneNumber,
+                    houseName: qry.address.houseName,
+                    street: qry.address.street,
+                    town: qry.address.town,
+                    postcode: qry.address.postcode,
+                    city: qry.address.city,
+                    lastFourDigits: qry.paymentDetails.lastFourCardNum,
+                    cardName: qry.paymentDetails.cardName,
+                }            
+            })
+        })
+    })
+
+    app.post('/user/edit/:name', checkAuth, async (req, res) => {
+        if(req.user.username != req.params.name || req.user.kind != "Support"){
+            res.render('../views/obserror.ejs', {
+                username: req.user.username,
+                current: "",
+                kind: req.user.kind,
+                message: "Access denied."
+            });
+        }
+
+        // Get last four digits of cardnum
+        let lastFourDigit = req.body.cardnum.substr(req.body.cardnum - 4);
+
+        // Data hashing
+        const salt = bcrypt.genSaltSync(saltRounds);
+
+        const newCardNumHash = bcrypt.hashSync(req.body.cardnum, salt);
+        const newSecNumHash = bcrypt.hashSync(req.body.ccv, salt);
+
+
+        await User.findOneAndUpdate(
+            // Filter
+            {username: req.params.name},
+            // Update
+            {
+                forename: req.body.forename,
+                surname: req.body.surname,
+                username: req.body.username,
+                email: req.body.email,
+                phoneNumber: req.body.phone,
+                notificationPreference: req.body.notif,
+                address: {
+                    houseName: req.body.houseName,
+                    street: req.body.street,
+                    town: req.body.town,
+                    postcode: req.body.postcode,
+                    city: req.body.city,
+                    country: req.body.country
+                },
+                paymentDetails: {
+                    cardNumHash: newCardNumHash,
+                    cardName: req.body.cardName,
+                    expiry: `${req.body.expiremonth}-20${req.body.expireyear}`,
+                    creditCardType: req.body.cardtype,
+                    secNumHash: newSecNumHash,
+                    lastFourCardNum: lastFourDigit
+                }                
+            }
+        ).then(() => {
+            res.redirect(`/user/${req.params.name}`)
+        })
+    })
 
     app.post('/suspend-user/:name', checkAuth, (req, res) => {
         if(req.user.kind == "Support"){
