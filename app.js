@@ -79,7 +79,7 @@ app.post('/newmessage', checkAuth, (req, res) => {
                 // Create new chat, 
                 var newChat = 
                     {
-                        clientUsername: req.body.request,
+                        clientUsername: req.body.requestname,
                         messages: [],
                         _id: mongoose.Types.ObjectId(),
                         createdAt: Date.now(),
@@ -125,6 +125,11 @@ io.on('connection', (socket) => {
     });
 
     socket.on('disconnect', () => {
+        for(const room of socket.rooms) {
+            if(room !== socket.id) {
+                socket.to(room).emit("messages", `${socket.id} has left`)
+            }
+        }
     })
 
 });

@@ -33,7 +33,7 @@
             <%})%>
         </div>
     </div>
-    <form id="messageform" class="messageform" action="/message/<%=chat._id%>" method="post" autocomplete="off" onsubmit="window.location.reload()">
+    <form id="messageform" class="messageform" action="/message/<%=chat._id%>" method="post" autocomplete="off">
         <input id="username" name="username" type="hidden" value="<%=username%>">
         <input id="content" name="content">
         <input type="hidden" id="room" name="room" value="<%=chat._id%>">

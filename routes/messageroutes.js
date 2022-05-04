@@ -72,24 +72,27 @@ module.exports = (app) => {
             { chats: {$elemMatch: {_id: chatid}} },
         (err, qry) => {
             if(err) throw err;
-            
-            if(qry == null) 
+
+            if(qry == null) {
                 res.render('../views/obserror.ejs', {
                     username: req.user.username,
                     current: "",
                     kind: req.user.kind,
                     message: "Chat does not exist."
                 });
+            }
+            else{
+                var currentChat = qry.chats.find(chat => chat._id = req.params.chatid)
+    
+                res.render('../views/message.ejs', {
+                    current: "",
+                    username: req.user.username,
+                    kind: req.user.kind,
+                    chat: currentChat,
+                    moment: moment
+                })
+            }
 
-            var currentChat = qry.chats.find(chat => chat._id = req.params.chatid)
-
-            res.render('../views/message.ejs', {
-                current: "",
-                username: req.user.username,
-                kind: req.user.kind,
-                chat: currentChat,
-                moment: moment
-            })
         })  
     })
 

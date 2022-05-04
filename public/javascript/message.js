@@ -60,7 +60,6 @@ messageForm.addEventListener('submit', function(e) {
     socket.emit('send-message', msg)
     
     console.log("Message sent.")
-    console.log(`Date: ${msg.time}`)
 
     e.currentTarget.submit();
 
