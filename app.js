@@ -6,15 +6,12 @@ const io = require('socket.io')(server);
 const port = 3000;
 
 const mongoose = require('./config/dbconfig');
-const User = require('./models/User');
+const Support = require('./models/Support');
 
 const session = require('express-session');
 const passport = require("passport");
 
 const moment = require('moment');
-const Client = require('./models/Client');
-const Support = require('./models/Support');
-const Chat = require('./models/Chat');
 
 app.use(express.static(__dirname + '/public'));
 app.use(express.urlencoded({ extended: true }));
@@ -37,7 +34,7 @@ app.use(passport.initialize());
 app.use(passport.session());
 
 // Routes used for testing purposes.
-require('./routes/testroutes')(app);
+//require('./routes/testroutes')(app);
 
 // Routes used for logging in
 require('./routes/loginroutes')(app);

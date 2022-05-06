@@ -1,7 +1,4 @@
-const { Passport } = require('passport/lib');
-
 module.exports = (app) => {
-    const mongoose = require('../config/dbconfig');
     const Obs = require('../models/Observation');
     const Client = require('../models/Client');
     const Support = require('../models/Support');

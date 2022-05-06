@@ -1,13 +1,6 @@
-
 module.exports = (app) => {
     const mongoose = require('../config/dbconfig');
-    const User = require('../models/User');
-    const Client = require('../models/Client');
     const Support = require('../models/Support');
-    const Chat = require('../models/Chat');
-    const Message = require('../models/Message');
-    const passport = require('passport');
-    const path = require('path');
     const moment = require('moment');
     
     checkAuth = (req, res, next) => {
@@ -16,12 +9,6 @@ module.exports = (app) => {
                 return next();
         }
         res.redirect('/login');
-    }
-
-    function sleep(ms){
-        return new Promise((resolve) => {
-            setTimeout(resolve, ms);
-        })
     }
 
     var clientsNeedingHelp = new Array("");

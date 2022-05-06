@@ -1,9 +1,6 @@
 
 module.exports = (app) => {
-    const mongoose = require('../config/dbconfig');
-    const User = require('../models/User');
     const Client = require('../models/Client');
-    const Support = require('../models/Support');
     const passport = require('passport/lib');
     const path = require('path');
     const bcrypt = require('bcrypt');

@@ -1,12 +1,6 @@
-const observationroutes = require('./observationroutes');
-
 module.exports = (app) => {
-    const mongoose = require('../config/dbconfig');
     const User = require('../models/User');
-    const Client = require('../models/Client');
-    const Support = require('../models/Support');
     const Observation = require('../models/Observation');
-    const path = require('path');
     const passport = require('passport');
     const moment = require('moment');
     const bcrypt = require('bcrypt');

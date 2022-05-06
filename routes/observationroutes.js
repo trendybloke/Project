@@ -1,8 +1,5 @@
 module.exports = (app) => {
-    const mongoose = require('../config/dbconfig');
     const User = require('../models/User');
-    const Client = require('../models/Client');
-    const Support = require('../models/Support');
     const Observation = require('../models/Observation');
     const passport = require('passport');
     const fs = require('fs');
@@ -204,8 +201,8 @@ module.exports = (app) => {
         }
     });
 
-    app.post('/observation/edit/:id', checkAuth, (req, res) => {
-        let imagePath = path.join(__dirname, '/uploads/' + req.file.filename);
+    app.post('/observation/edit/:id', upload.single('image'), checkAuth, (req, res) => {
+        let imagePath = path.join(__dirname, '../uploads/' + req.file.filename);
 
         var filter = { _id: req.params.id }
         var update = {
