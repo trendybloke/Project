@@ -95,7 +95,7 @@ module.exports = (app) => {
                 kind = user.kind;
                 
             // Is user a client?
-            if(kind == "Client"){
+            if(kind == "Client" && res.accountStatus != "suspended"){
                 Client.findOne({username: req.body.username}, 
                     (err, clientUser) => {
                     if(err) throw err;
